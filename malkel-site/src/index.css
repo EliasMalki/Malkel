@@ -1,0 +1,537 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Map shadcn / magicui semantic tokens onto the existing MalkEl CSS variables.
+ * The vars themselves keep their canonical definitions in :root and
+ * :root[data-theme='light'] below — these aliases just teach Tailwind how to
+ * resolve `bg-background`, `text-foreground`, etc. without duplicating values.
+ * Because the source vars already swap per theme, dark/light handling is
+ * automatic; no `dark:` prefixes needed.
+ */
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text-primary);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-text-primary);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-text-primary);
+  --color-primary: var(--color-text-primary);
+  --color-primary-foreground: var(--color-bg);
+  --color-secondary: var(--color-overlay-08);
+  --color-secondary-foreground: var(--color-text-primary);
+  --color-muted: var(--color-overlay-05);
+  --color-muted-foreground: var(--color-text-secondary);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-bg);
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--color-divider);
+  --color-input: var(--color-overlay-08);
+  --color-ring: var(--color-overlay-30);
+  --color-success: var(--color-success);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --font-sans: var(--font-text);
+  --font-display: var(--font-display);
+}
+
+:root {
+  --color-bg: #000000;
+  --color-surface: #0A0A0A;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary: rgba(255, 255, 255, 0.35);
+  --color-divider: rgba(255, 255, 255, 0.08);
+  --color-divider-light: rgba(255, 255, 255, 0.2);
+  --color-accent: #D4A056;
+  --color-success: #10B981;
+  --color-success-glow: rgba(16, 185, 129, 0.2);
+  --color-nav-bg: rgba(0, 0, 0, 0.8);
+  --color-nav-border: rgba(255, 255, 255, 0.08);
+
+  --color-overlay-03: rgba(255, 255, 255, 0.03);
+  --color-overlay-04: rgba(255, 255, 255, 0.04);
+  --color-overlay-05: rgba(255, 255, 255, 0.05);
+  --color-overlay-08: rgba(255, 255, 255, 0.08);
+  --color-overlay-10: rgba(255, 255, 255, 0.1);
+  --color-overlay-20: rgba(255, 255, 255, 0.2);
+  --color-overlay-22: rgba(255, 255, 255, 0.22);
+  --color-overlay-30: rgba(255, 255, 255, 0.3);
+  --color-overlay-40: rgba(255, 255, 255, 0.4);
+  --color-overlay-50: rgba(255, 255, 255, 0.5);
+  --color-overlay-60: rgba(255, 255, 255, 0.6);
+  --color-overlay-80: rgba(255, 255, 255, 0.8);
+  --color-overlay-100: rgba(255, 255, 255, 1);
+
+  --color-inverse-overlay-30: rgba(0, 0, 0, 0.3);
+  --color-inverse-overlay-40: rgba(0, 0, 0, 0.4);
+  --color-inverse-overlay-60: rgba(0, 0, 0, 0.6);
+  --color-inverse-overlay-80: rgba(0, 0, 0, 0.8);
+}
+
+:root[data-theme='light'] {
+  --color-bg: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: rgba(0, 0, 0, 0.6);
+  --color-text-tertiary: rgba(0, 0, 0, 0.35);
+  --color-divider: rgba(0, 0, 0, 0.08);
+  --color-divider-light: rgba(0, 0, 0, 0.2);
+  --color-accent: #D4A056;
+  --color-success: #059669;
+  --color-success-glow: rgba(16, 185, 129, 0.15);
+  --color-nav-bg: rgba(255, 255, 255, 0.8);
+  --color-nav-border: rgba(0, 0, 0, 0.08);
+
+  --color-overlay-03: rgba(0, 0, 0, 0.03);
+  --color-overlay-04: rgba(0, 0, 0, 0.04);
+  --color-overlay-05: rgba(0, 0, 0, 0.05);
+  --color-overlay-08: rgba(0, 0, 0, 0.08);
+  --color-overlay-10: rgba(0, 0, 0, 0.1);
+  --color-overlay-20: rgba(0, 0, 0, 0.2);
+  --color-overlay-22: rgba(0, 0, 0, 0.22);
+  --color-overlay-30: rgba(0, 0, 0, 0.3);
+  --color-overlay-40: rgba(0, 0, 0, 0.4);
+  --color-overlay-50: rgba(0, 0, 0, 0.5);
+  --color-overlay-60: rgba(0, 0, 0, 0.6);
+  --color-overlay-80: rgba(0, 0, 0, 0.8);
+  --color-overlay-100: rgba(0, 0, 0, 1);
+
+  --color-inverse-overlay-30: rgba(255, 255, 255, 0.6);
+  --color-inverse-overlay-40: rgba(255, 255, 255, 0.7);
+  --color-inverse-overlay-60: rgba(255, 255, 255, 0.8);
+  --color-inverse-overlay-80: rgba(255, 255, 255, 0.9);
+}
+
+:root {
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+
+  --layout-max-width: 1120px;
+  --layout-padding: 48px;
+  --section-padding-y: 200px;
+  --grid-gap: 24px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --layout-padding: 24px;
+    --section-padding-y: 160px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-text);
+  line-height: 1.55;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+}
+
+img,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Base Accessibility / Focus */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* UI Layout Utilities */
+.container {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--layout-padding);
+  padding-right: var(--layout-padding);
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+}
+
+@media (max-width: 768px) {
+  .grid-12 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section {
+  padding-top: var(--section-padding-y);
+  padding-bottom: var(--section-padding-y);
+  position: relative;
+}
+
+/* Typography Classes */
+.text-hero {
+  font-size: clamp(64px, 8vw, 120px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.text-section-title {
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.08;
+}
+
+.text-eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.text-body-large {
+  font-size: clamp(18px, 2.5vw, 21px);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+}
+
+.text-body {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.text-body-small {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-stat {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 8vw, 120px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border-radius: 980px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 100ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:hover {
+  opacity: 0.88;
+}
+
+.btn-primary {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.btn-success {
+  position: relative;
+  background:
+    linear-gradient(#064E3B, #064E3B) padding-box,
+    linear-gradient(-45deg, #022c22, #059669, #10B981, #6EE7B7, #A7F3D0, #34D399, #10B981, #059669, #022c22) border-box;
+  background-size: 100% 100%, 400% 400%;
+  color: #ffffff;
+  border: 2px solid transparent;
+  z-index: 1;
+  animation: borderPanBg 106s linear infinite;
+  transition: transform 200ms ease, color 200ms ease;
+}
+
+.btn-success:hover {
+  transform: scale(1.02);
+  color: #ffffff;
+  /* Lock to white for contrast against the green body */
+  background:
+    linear-gradient(-45deg, #022c22, #059669, #10B981, #6EE7B7, #A7F3D0, #34D399, #10B981, #059669, #022c22) padding-box,
+    linear-gradient(-45deg, #022c22, #059669, #10B981, #6EE7B7, #A7F3D0, #34D399, #10B981, #059669, #022c22) border-box;
+  background-size: 400% 400%, 400% 400%;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.4);
+}
+
+.btn-success:hover::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  background: linear-gradient(-45deg, #022c22, #059669, #10B981, #6EE7B7, #A7F3D0, #34D399, #10B981, #059669, #022c22);
+  background-size: 400% 400%;
+  border-radius: 980px;
+  z-index: -1;
+  filter: blur(10px);
+  animation: borderPanGlow 106s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes borderPanBg {
+  0% {
+    background-position: 0% 0%, 200.0% 200.0%;
+  }
+
+  5% {
+    background-position: 0% 0%, 330.9% 200.0%;
+  }
+
+  10% {
+    background-position: 0% 0%, 258.8% 9.8%;
+  }
+
+  15% {
+    background-position: 0% 0%, 180.9% 200.0%;
+  }
+
+  20% {
+    background-position: 0% 0%, 295.1% 317.6%;
+  }
+
+  25% {
+    background-position: 0% 0%, 400.0% 200.0%;
+  }
+
+  30% {
+    background-position: 0% 0%, 295.1% 317.6%;
+  }
+
+  35% {
+    background-position: 0% 0%, 180.9% 200.0%;
+  }
+
+  40% {
+    background-position: 0% 0%, 258.8% 9.8%;
+  }
+
+  45% {
+    background-position: 0% 0%, 330.9% 200.0%;
+  }
+
+  50% {
+    background-position: 0% 0%, 200.0% 200.0%;
+  }
+
+  55% {
+    background-position: 0% 0%, 69.1% 200.0%;
+  }
+
+  60% {
+    background-position: 0% 0%, 141.2% 390.2%;
+  }
+
+  65% {
+    background-position: 0% 0%, 219.1% 200.0%;
+  }
+
+  70% {
+    background-position: 0% 0%, 104.9% 82.4%;
+  }
+
+  75% {
+    background-position: 0% 0%, 0.0% 200.0%;
+  }
+
+  80% {
+    background-position: 0% 0%, 104.9% 82.4%;
+  }
+
+  85% {
+    background-position: 0% 0%, 219.1% 200.0%;
+  }
+
+  90% {
+    background-position: 0% 0%, 141.2% 390.2%;
+  }
+
+  95% {
+    background-position: 0% 0%, 69.1% 200.0%;
+  }
+
+  100% {
+    background-position: 0% 0%, 200.0% 200.0%;
+  }
+}
+
+@keyframes borderPanGlow {
+  0% {
+    background-position: 200.0% 200.0%;
+  }
+
+  5% {
+    background-position: 330.9% 200.0%;
+  }
+
+  10% {
+    background-position: 258.8% 9.8%;
+  }
+
+  15% {
+    background-position: 180.9% 200.0%;
+  }
+
+  20% {
+    background-position: 295.1% 317.6%;
+  }
+
+  25% {
+    background-position: 400.0% 200.0%;
+  }
+
+  30% {
+    background-position: 295.1% 317.6%;
+  }
+
+  35% {
+    background-position: 180.9% 200.0%;
+  }
+
+  40% {
+    background-position: 258.8% 9.8%;
+  }
+
+  45% {
+    background-position: 330.9% 200.0%;
+  }
+
+  50% {
+    background-position: 200.0% 200.0%;
+  }
+
+  55% {
+    background-position: 69.1% 200.0%;
+  }
+
+  60% {
+    background-position: 141.2% 390.2%;
+  }
+
+  65% {
+    background-position: 219.1% 200.0%;
+  }
+
+  70% {
+    background-position: 104.9% 82.4%;
+  }
+
+  75% {
+    background-position: 0.0% 200.0%;
+  }
+
+  80% {
+    background-position: 104.9% 82.4%;
+  }
+
+  85% {
+    background-position: 219.1% 200.0%;
+  }
+
+  90% {
+    background-position: 141.2% 390.2%;
+  }
+
+  95% {
+    background-position: 69.1% 200.0%;
+  }
+
+  100% {
+    background-position: 200.0% 200.0%;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Scroll Revel animations handled by JS, but keeping standard classes */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

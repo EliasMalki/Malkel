@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "mcp___magicuidesign_mcp__searchRegistryItems",
+      "mcp__shadcn__search_items_in_registries",
+      "Bash(npx shadcn@latest add accordion --yes)",
+      "Bash(npx shadcn@latest add \"https://magicui.design/r/marquee.json\" --yes)",
+      "Bash(npm uninstall *)"
+    ]
+  }
+}
