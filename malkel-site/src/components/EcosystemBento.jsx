@@ -1,8 +1,95 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
-import { useTheme } from '../hooks/useTheme';
+
+/**
+ * GrainientBg — animated grainy gradient background.
+ * First-iteration keyframes (translate only). 3 blobs + extra lighter shade.
+ */
+function GrainientBg({ color, theme }) {
+  const uid = useId().replace(/:/g, '');
+
+  const base = theme === 'light' ? '#F5F5F7' : '#0a0a0a';
+  // Primary blob opacities
+  const o1 = theme === 'light' ? '55' : '40';
+  const o2 = theme === 'light' ? '30' : '28';
+  const o3 = theme === 'light' ? '20' : '18';
+  // Extra lighter shade of same hue (simulate a lighter tint by mixing with white/dark)
+  const o4 = theme === 'light' ? '18' : '14';
+
+  return (
+    <div aria-hidden="true" style={{
+      position: 'absolute', inset: 0, borderRadius: 'inherit',
+      overflow: 'hidden', zIndex: 0, pointerEvents: 'none'
+    }}>
+      {/* Base */}
+      <div style={{ position: 'absolute', inset: 0, background: base, borderRadius: 'inherit' }} />
+
+      {/* Blob 1 — top-left, primary */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 'inherit',
+        background: `radial-gradient(ellipse 80% 65% at 15% 15%, ${color}${o1}, transparent 65%)`,
+        animation: `gbBlob1-${uid} 8s ease-in-out infinite`,
+      }} />
+
+      {/* Blob 2 — bottom-right, secondary */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 'inherit',
+        background: `radial-gradient(ellipse 70% 70% at 85% 85%, ${color}${o2}, transparent 65%)`,
+        animation: `gbBlob2-${uid} 11s ease-in-out infinite`,
+      }} />
+
+      {/* Blob 3 — top-right, extra lighter shade */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 'inherit',
+        background: `radial-gradient(ellipse 50% 55% at 80% 10%, ${color}${o3}, transparent 70%)`,
+        animation: `gbBlob3-${uid} 14s ease-in-out infinite`,
+      }} />
+
+      {/* Blob 4 — centre, very faint extra shade for depth */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 'inherit',
+        background: `radial-gradient(ellipse 55% 45% at 50% 55%, ${color}${o4}, transparent 70%)`,
+        animation: `gbBlob4-${uid} 18s ease-in-out infinite`,
+      }} />
+
+      {/* Grain overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 'inherit',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+        backgroundSize: '256px 256px',
+        opacity: theme === 'light' ? 0.045 : 0.065,
+        mixBlendMode: 'overlay',
+      }} />
+
+      <style>{`
+        @keyframes gbBlob1-${uid} {
+          0%   { transform: translate(0px, 0px); }
+          33%  { transform: translate(12px, -10px); }
+          66%  { transform: translate(-8px, 14px); }
+          100% { transform: translate(0px, 0px); }
+        }
+        @keyframes gbBlob2-${uid} {
+          0%   { transform: translate(0px, 0px); }
+          40%  { transform: translate(-14px, 10px); }
+          75%  { transform: translate(10px, -12px); }
+          100% { transform: translate(0px, 0px); }
+        }
+        @keyframes gbBlob3-${uid} {
+          0%   { transform: translate(0px, 0px); }
+          50%  { transform: translate(-10px, 12px); }
+          100% { transform: translate(0px, 0px); }
+        }
+        @keyframes gbBlob4-${uid} {
+          0%   { transform: translate(0px, 0px); }
+          50%  { transform: translate(8px, -6px); }
+          100% { transform: translate(0px, 0px); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 const cardsData = [
   {
@@ -71,20 +158,11 @@ const cardsData = [
   }
 ];
 
-/**
- * SVG component that renders inline SVG and injects the 'light' class via classList.
- */
 function ThemedSvg({ src, alt, theme }) {
   const [svgContent, setSvgContent] = useState('');
-
-  // Fetch the SVG content once
   useEffect(() => {
-    fetch(src)
-      .then(res => res.text())
-      .then(text => setSvgContent(text))
-      .catch(() => {});
+    fetch(src).then(res => res.text()).then(text => setSvgContent(text)).catch(() => {});
   }, [src]);
-
   return (
     <div
       className={theme === 'light' ? 'light' : ''}
@@ -95,62 +173,38 @@ function ThemedSvg({ src, alt, theme }) {
   );
 }
 
-
 export default function EcosystemBento() {
   const [activeId, setActiveId] = useState(null);
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
   const [hoveredId, setHoveredId] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('dark');
 
-  // Sync with document theme attribute
   useEffect(() => {
     const observer = new MutationObserver(() => {
-      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-      setCurrentTheme(theme);
+      setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'dark');
     });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme']
-    });
-
-    // Initial check
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-
     return () => observer.disconnect();
   }, []);
 
-  // Prevent background scrolling when modal is open
   useEffect(() => {
-    if (activeId) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
+    document.body.style.overflow = activeId ? 'hidden' : 'auto';
+    return () => { document.body.style.overflow = 'auto'; };
   }, [activeId]);
 
   const scrollToAudit = () => {
     setActiveId(null);
     setTimeout(() => {
       const el = document.getElementById('audit');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 300); // Wait for modal close animation
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 200);
   };
 
   const activeCard = cardsData.find((c) => c.id === activeId);
 
-  // Unified transition for premium weighted feel
-  const premiumTransition = {
-    type: "spring",
-    stiffness: 260,
-    damping: 32,
-    mass: 1
-  };
+  // Simple, fast transition — no spring lag on close
+  const modalTransition = { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] };
 
   return (
     <section id="ecosystem" className="section container" ref={ref} style={{ position: 'relative' }}>
@@ -166,19 +220,12 @@ export default function EcosystemBento() {
         </p>
       </div>
 
-      <div 
-        className={`eco-grid reveal ${isIntersecting ? 'is-visible' : ''}`} 
-        style={{ transitionDelay: '200ms' }}
-      >
+      <div className={`eco-grid reveal ${isIntersecting ? 'is-visible' : ''}`} style={{ transitionDelay: '200ms' }}>
         {cardsData.map((card, index) => {
           const isHovered = hoveredId === card.id;
-          const glowIntensity = isHovered ? 1 : 0;
-
           return (
             <motion.div
-              layoutId={`card-${card.id}`}
               key={card.id}
-              onClick={() => setActiveId(card.id)}
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
               className="eco-card"
@@ -186,92 +233,89 @@ export default function EcosystemBento() {
               animate={isIntersecting ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ delay: index * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               style={{
-                borderColor: isHovered
-                  ? `color-mix(in srgb, var(--color-overlay-08), ${card.color} 40%)`
-                  : undefined,
+                borderColor: isHovered ? `${card.color}70` : undefined,
                 transform: isHovered ? 'translateY(-6px)' : undefined,
-                boxShadow: isHovered ? `0 ${20}px 40px ${card.color}22` : 'none',
+                boxShadow: isHovered ? `0 20px 48px ${card.color}20` : 'none',
               }}
             >
-              {/* Internal radial glow — Process section style */}
-              <div style={{
-                position: 'absolute',
-                top: '-30px',
-                left: '-30px',
-                width: '200px',
-                height: '200px',
-                background: `radial-gradient(circle, ${card.color} 0%, transparent 60%)`,
-                opacity: glowIntensity * 0.12,
-                pointerEvents: 'none',
-                zIndex: 0,
-                transition: 'opacity 300ms ease'
-              }} />
+              <GrainientBg color={card.color} theme={currentTheme} />
 
-              {/* Full-bleed SVG illustration */}
-              <motion.div layoutId={`image-container-${card.id}`} className="eco-card-img">
+              {/* SVG image — rounded directly, no inner wrapper */}
+              <div className="eco-card-img">
                 <ThemedSvg src={card.image} alt={card.title} theme={currentTheme} />
-              </motion.div>
+              </div>
 
               {/* Card body */}
               <div className="eco-card-body">
-                <motion.div layoutId={`overline-${card.id}`} className="eco-card-overline" style={{
-                  color: isHovered
-                    ? `color-mix(in srgb, var(--color-text-secondary), ${card.color} 60%)`
-                    : undefined,
+                <div className="eco-card-overline" style={{
+                  color: isHovered ? card.color : undefined,
                   transition: 'color 300ms ease'
                 }}>
                   {card.overline}
-                </motion.div>
-                <motion.h3 layoutId={`title-${card.id}`} className="eco-card-title">
-                  {card.title}
-                </motion.h3>
-                <motion.p layoutId={`description-${card.id}`} className="eco-card-desc">
-                  {card.description}
-                </motion.p>
-                <motion.div layoutId={`tagline-${card.id}`} className="eco-card-tag" style={{
-                  color: isHovered
-                    ? `color-mix(in srgb, var(--color-text-primary), ${card.color} 30%)`
-                    : undefined,
+                </div>
+                <h3 className="eco-card-title">{card.title}</h3>
+                <p className="eco-card-desc">{card.description}</p>
+                <div className="eco-card-tag" style={{
+                  color: isHovered ? `color-mix(in srgb, var(--color-text-primary), ${card.color} 30%)` : undefined,
                   transition: 'color 300ms ease'
                 }}>
                   {card.tagline}
-                </motion.div>
+                </div>
+
+                {/* Two action buttons */}
+                <div className="eco-card-actions">
+                  <button
+                    className="eco-btn-learn"
+                    style={{
+                      background: card.color,
+                      boxShadow: isHovered ? `0 0 20px ${card.color}55` : 'none',
+                    }}
+                    onClick={(e) => { e.stopPropagation(); setActiveId(card.id); }}
+                  >
+                    Learn More
+                  </button>
+                  <button
+                    className="eco-btn-audit"
+                    onClick={(e) => { e.stopPropagation(); scrollToAudit(); }}
+                  >
+                    Book Audit
+                  </button>
+                </div>
               </div>
             </motion.div>
           );
         })}
       </div>
 
+      {/* Modal */}
       <AnimatePresence>
         {activeId && activeCard && (
           <React.Fragment>
             <motion.div
+              key="backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={modalTransition}
               onClick={() => setActiveId(null)}
               className="eco-modal-backdrop"
             />
             <div className="eco-modal-wrapper">
               <motion.div
-                layoutId={`card-${activeCard.id}`}
+                key={`modal-${activeCard.id}`}
                 className="eco-modal"
-                transition={premiumTransition}
-                style={{
-                  borderColor: `color-mix(in srgb, var(--color-overlay-20), ${activeCard.color} 30%)`
-                }}
+                initial={{ opacity: 0, scale: 0.96, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 16 }}
+                transition={modalTransition}
+                style={{ borderColor: `${activeCard.color}40` }}
               >
-                {/* Modal internal glow */}
+                {/* Modal glow */}
                 <div style={{
-                  position: 'absolute',
-                  top: '-40px',
-                  left: '-40px',
-                  width: '250px',
-                  height: '250px',
+                  position: 'absolute', top: '-40px', left: '-40px',
+                  width: '250px', height: '250px',
                   background: `radial-gradient(circle, ${activeCard.color} 0%, transparent 60%)`,
-                  opacity: 0.1,
-                  pointerEvents: 'none',
-                  zIndex: 0
+                  opacity: 0.1, pointerEvents: 'none', zIndex: 0
                 }} />
 
                 <button
@@ -283,80 +327,61 @@ export default function EcosystemBento() {
                   <X size={20} />
                 </button>
 
-                {/* Modal Header */}
+                {/* Header */}
                 <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
-                  <motion.div layoutId={`image-container-${activeCard.id}`} className="eco-modal-img">
+                  <div className="eco-modal-img">
                     <ThemedSvg src={activeCard.image} alt={activeCard.title} theme={currentTheme} />
-                  </motion.div>
-                  
-                  <motion.div layoutId={`overline-${activeCard.id}`} className="eco-card-overline" style={{ color: activeCard.color, marginBottom: '12px' }}>
+                  </div>
+
+                  <div className="eco-card-overline" style={{ color: activeCard.color, marginBottom: '12px' }}>
                     {activeCard.overline}
-                  </motion.div>
-                  <motion.h3 layoutId={`title-${activeCard.id}`} style={{ fontSize: '36px', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: '16px', letterSpacing: '-0.02em' }}>
+                  </div>
+                  <h3 style={{ fontSize: '36px', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: '16px', letterSpacing: '-0.02em' }}>
                     {activeCard.title}
-                  </motion.h3>
-
-                  <motion.div layoutId={`tagline-${activeCard.id}`} style={{
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: 'var(--color-text-primary)',
-                    opacity: 0.85,
-                    marginBottom: '8px',
-                    letterSpacing: '-0.005em'
-                  }}>
+                  </h3>
+                  <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--color-text-primary)', opacity: 0.85, marginBottom: '8px', letterSpacing: '-0.005em' }}>
                     {activeCard.tagline}
-                  </motion.div>
-
-                  <motion.div layoutId={`description-${activeCard.id}`} style={{
-                    display: 'inline-block',
-                    padding: '8px 16px',
+                  </div>
+                  <div style={{
+                    display: 'inline-block', padding: '8px 16px',
                     backgroundColor: `${activeCard.color}18`,
                     border: `1px solid ${activeCard.color}33`,
-                    borderRadius: '8px',
-                    color: activeCard.color,
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    letterSpacing: '0.02em',
-                    width: 'fit-content'
+                    borderRadius: '8px', color: activeCard.color,
+                    fontSize: '13px', fontWeight: 500, letterSpacing: '0.02em', width: 'fit-content'
                   }}>
                     {activeCard.offerings}
-                  </motion.div>
+                  </div>
                 </div>
 
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
+                {/* Body */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.4 }}
+                  transition={{ delay: 0.08, duration: 0.3 }}
                   style={{ display: 'flex', flexDirection: 'column', gap: '24px', position: 'relative', zIndex: 1 }}
                 >
                   <div>
-                    <h4 className="eco-modal-heading">
-                      The Objective
-                    </h4>
+                    <h4 className="eco-modal-heading">The Objective</h4>
                     <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.7, fontSize: '15px' }}>
                       {activeCard.expandedObjective}
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="eco-modal-heading">
-                      Deployment Examples
-                    </h4>
+                    <h4 className="eco-modal-heading">Deployment Examples</h4>
                     <ul style={{ listStyleType: 'none', padding: 0, color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', gap: '16px', lineHeight: 1.7, fontSize: '15px' }}>
                       {activeCard.expandedExamples.map((example, index) => (
                         <li key={index} style={{ paddingLeft: '20px', position: 'relative' }}>
                           <span style={{ position: 'absolute', left: 0, color: activeCard.color, fontWeight: 600 }}>→</span>
-                          <span style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}>
-                            {example.split(':')[0]}:
-                          </span>
+                          <span style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}>{example.split(':')[0]}:</span>
                           {example.split(':').slice(1).join(':')}
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div style={{ marginTop: '16px' }}>
-                    <button onClick={scrollToAudit} className="btn btn-success" style={{ display: 'inline-block', width: '100%', textAlign: 'center', padding: '16px' }}>
+                  <div style={{ marginTop: '8px' }}>
+                    <button onClick={scrollToAudit} className="btn btn-success" style={{ display: 'block', width: '100%', textAlign: 'center', padding: '16px' }}>
                       Book a Free Infrastructure Audit
                     </button>
                   </div>
@@ -376,49 +401,40 @@ export default function EcosystemBento() {
           margin: 0 auto;
         }
         @media (max-width: 768px) {
-          .eco-grid {
-            grid-template-columns: 1fr;
-          }
+          .eco-grid { grid-template-columns: 1fr; }
         }
 
         .eco-card {
           border-radius: 20px;
           overflow: hidden;
-          cursor: pointer;
-          background: var(--color-overlay-03);
+          cursor: default;
+          background: transparent;
           border: 1px solid var(--color-overlay-08);
           display: flex;
           flex-direction: column;
           position: relative;
-          transition: background 0.25s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        [data-theme="dark"] .eco-card {
-          background: rgba(255,255,255,0.03);
-        }
-        [data-theme="dark"] .eco-card:hover {
-          background: rgba(255,255,255,0.05);
-        }
-        [data-theme="light"] .eco-card {
-          background: #F5F5F7;
-        }
-        [data-theme="light"] .eco-card:hover {
-          background: #EEEEF1;
+          transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .eco-card-img {
-          aspect-ratio: 600 / 380;
-          width: 100%;
+          aspect-ratio: 600 / 360;
+          width: calc(100% - 24px);
+          margin: 12px 12px 0;
+          border-radius: 12px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
           z-index: 1;
-          padding: 20px;
+          background: var(--color-overlay-03);
+        }
+        [data-theme="light"] .eco-card-img {
+          background: rgba(255,255,255,0.5);
         }
 
         .eco-card-body {
-          padding: 32px 28px 30px;
+          padding: 24px 28px 28px;
           display: flex;
           flex-direction: column;
           gap: 10px;
@@ -434,8 +450,9 @@ export default function EcosystemBento() {
           font-weight: 500;
           color: var(--color-text-secondary);
           opacity: 0.5;
-          transition: color 300ms ease;
+          transition: color 300ms ease, opacity 300ms ease;
         }
+        .eco-card:hover .eco-card-overline { opacity: 1; }
 
         .eco-card-title {
           font-size: 24px;
@@ -451,8 +468,8 @@ export default function EcosystemBento() {
           font-weight: 400;
           letter-spacing: -0.005em;
           color: var(--color-text-secondary);
-          opacity: 0.7;
-          margin-top: 4px;
+          opacity: 0.75;
+          margin-top: 2px;
         }
 
         .eco-card-tag {
@@ -460,19 +477,58 @@ export default function EcosystemBento() {
           font-weight: 500;
           letter-spacing: -0.005em;
           color: var(--color-text-primary);
-          opacity: 0.85;
-          margin-top: auto;
-          padding-top: 6px;
+          opacity: 0.8;
           transition: color 300ms ease;
         }
 
-        /* Modal styles */
+        .eco-card-actions {
+          display: flex;
+          gap: 10px;
+          margin-top: 16px;
+        }
+
+        .eco-btn-learn {
+          flex: 1;
+          padding: 11px 0;
+          border: none;
+          border-radius: 10px;
+          font-size: 13px;
+          font-weight: 600;
+          color: #fff;
+          cursor: pointer;
+          letter-spacing: 0.01em;
+          transition: opacity 0.2s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .eco-btn-learn:hover { opacity: 0.88; transform: translateY(-1px); }
+        .eco-btn-learn:active { transform: translateY(0); opacity: 1; }
+
+        .eco-btn-audit {
+          flex: 1;
+          padding: 11px 0;
+          border: 1px solid var(--color-overlay-15);
+          border-radius: 10px;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          background: var(--color-overlay-05);
+          cursor: pointer;
+          letter-spacing: 0.01em;
+          transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .eco-btn-audit:hover {
+          background: var(--color-overlay-10);
+          border-color: var(--color-overlay-25);
+          transform: translateY(-1px);
+        }
+        .eco-btn-audit:active { transform: translateY(0); }
+
+        /* Modal */
         .eco-modal-backdrop {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.7);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background: rgba(0,0,0,0.65);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           z-index: 999;
         }
         .eco-modal-wrapper {
@@ -524,7 +580,6 @@ export default function EcosystemBento() {
           height: 300px;
           overflow: hidden;
           border-radius: 16px;
-          position: relative;
           margin-bottom: 32px;
           display: flex;
           align-items: center;
@@ -539,22 +594,10 @@ export default function EcosystemBento() {
           border-bottom: 1px solid var(--color-overlay-10);
           padding-bottom: 8px;
         }
-
-        /* Modal Scrollbar */
-        .eco-modal::-webkit-scrollbar {
-          width: 8px;
-        }
-        .eco-modal::-webkit-scrollbar-track {
-          background: rgba(0,0,0,0.2);
-          border-radius: 8px;
-        }
-        .eco-modal::-webkit-scrollbar-thumb {
-          background: var(--color-overlay-20);
-          border-radius: 8px;
-        }
-        .eco-modal::-webkit-scrollbar-thumb:hover {
-          background: var(--color-overlay-30);
-        }
+        .eco-modal::-webkit-scrollbar { width: 8px; }
+        .eco-modal::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 8px; }
+        .eco-modal::-webkit-scrollbar-thumb { background: var(--color-overlay-20); border-radius: 8px; }
+        .eco-modal::-webkit-scrollbar-thumb:hover { background: var(--color-overlay-30); }
       `}</style>
     </section>
   );
