@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MalkEl Ecosystem — Apple Mockup Preview</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;padding:80px 32px;min-height:100vh;transition:background .35s,color .35s}
+body.dark{background:#000;color:#fff}
+body.light{background:#fff;color:#0a0a0a}
+
+.toggle{position:fixed;top:24px;right:24px;display:flex;gap:1px;padding:1px;border-radius:980px;z-index:10;backdrop-filter:blur(12px)}
+.dark .toggle{background:rgba(255,255,255,.08)}
+.light .toggle{background:rgba(0,0,0,.08)}
+.toggle button{font-family:inherit;background:transparent;border:none;color:inherit;font-size:13px;font-weight:500;padding:8px 16px;cursor:pointer;border-radius:980px;letter-spacing:-.005em;opacity:.5;transition:opacity .2s,background .2s,color .2s}
+.toggle button.on{opacity:1}
+.dark .toggle button.on{background:#fff;color:#000}
+.light .toggle button.on{background:#0a0a0a;color:#fff}
+
+.wrap{max-width:1120px;margin:0 auto}
+.head{text-align:center;margin-bottom:80px}
+.eye{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;margin-bottom:18px;display:block}
+.dark .eye{color:rgba(255,255,255,.4)}
+.light .eye{color:rgba(0,0,0,.45)}
+.h1{font-size:64px;font-weight:600;letter-spacing:-.025em;line-height:1.05;margin-bottom:18px}
+.sub{font-size:17px;max-width:560px;margin:0 auto;line-height:1.6}
+.dark .sub{color:rgba(255,255,255,.55)}
+.light .sub{color:rgba(0,0,0,.55)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{border-radius:20px;overflow:hidden;cursor:pointer;transition:background .25s}
+.dark .card{background:rgba(255,255,255,.03)}
+.dark .card:hover{background:rgba(255,255,255,.05)}
+.light .card{background:#F5F5F7}
+.light .card:hover{background:#EEEEF1}
+
+.card-img{aspect-ratio:600/380;display:block}
+.card-img svg{width:100%;height:100%;display:block}
+
+.card-body{padding:32px 28px 30px}
+.card-eye{font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;font-weight:500}
+.dark .card-eye{color:rgba(255,255,255,.32)}
+.light .card-eye{color:rgba(0,0,0,.4)}
+.card-title{font-size:24px;font-weight:600;letter-spacing:-.02em;margin-bottom:12px;line-height:1.15}
+.card-body-txt{font-size:14px;line-height:1.6;margin-bottom:16px;font-weight:400;letter-spacing:-.005em}
+.dark .card-body-txt{color:rgba(255,255,255,.55)}
+.light .card-body-txt{color:rgba(0,0,0,.55)}
+.card-tag{font-size:13px;font-weight:500;letter-spacing:-.005em}
+.dark .card-tag{color:rgba(255,255,255,.85)}
+.light .card-tag{color:rgba(0,0,0,.8)}
+
+.note{margin-top:48px;padding:24px;border-radius:12px;font-size:13px;line-height:1.7}
+.dark .note{border:0.5px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.5)}
+.light .note{border:0.5px dashed rgba(0,0,0,.18);color:rgba(0,0,0,.5)}
+.note strong{font-weight:500}
+.dark .note strong{color:rgba(255,255,255,.85)}
+.light .note strong{color:rgba(0,0,0,.85)}
+</style>
+</head>
+<body class="dark">
+
+<div class="toggle">
+  <button id="bDark" class="on">Dark</button>
+  <button id="bLight">Light</button>
+</div>
+
+<div class="wrap">
+
+<div class="head">
+<span class="eye">The MalkEl Ecosystem</span>
+<h1 class="h1">One roof. Every solution.</h1>
+<p class="sub">Strategy, software, automation, and operations — engineered as a single unified system, not a stack of vendors.</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+  <div class="card-img"><object data="01-websites.svg" type="image/svg+xml" style="width:100%;height:100%;display:block;pointer-events:none"></object></div>
+  <div class="card-body">
+    <div class="card-eye">The Front Door</div>
+    <div class="card-title">Websites</div>
+    <div class="card-body-txt">We don't build digital brochures. We engineer conversion infrastructure — high-speed assets that filter unqualified traffic and drive bookings into your pipeline.</div>
+    <div class="card-tag">Built to convert. Wired to your pipeline.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-img"><object data="02-apps.svg" type="image/svg+xml" style="width:100%;height:100%;display:block;pointer-events:none"></object></div>
+  <div class="card-body">
+    <div class="card-eye">The Daily Tools</div>
+    <div class="card-title">Apps</div>
+    <div class="card-body-txt">Custom digital products that eliminate the gap between office and field. Workforce platforms, client portals, internal dashboards — built to fit your operation.</div>
+    <div class="card-tag">Software that fits your operation.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-img"><object data="03-systems.svg" type="image/svg+xml" style="width:100%;height:100%;display:block;pointer-events:none"></object></div>
+  <div class="card-body">
+    <div class="card-eye">The Internal Engine</div>
+    <div class="card-title">Custom Systems</div>
+    <div class="card-body-txt">The central nervous system of your business. We replace the duct tape between your SaaS subscriptions with a unified, bespoke database that you actually own.</div>
+    <div class="card-tag">You own the data. You own the logic.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-img"><object data="04-ai.svg" type="image/svg+xml" style="width:100%;height:100%;display:block;pointer-events:none"></object></div>
+  <div class="card-body">
+    <div class="card-eye">The Leverage Layer</div>
+    <div class="card-title">AI &amp; Automation</div>
+    <div class="card-body-txt">Asymmetric output deployed as ruthless operational leverage. MalkelAI lead triage, sub-60-second response, autonomous data enrichment.</div>
+    <div class="card-tag">60-second response. 24/7. No humans needed.</div>
+  </div>
+</div>
+
+</div>
+
+<div class="note">
+<strong>Theme switching:</strong> Toggle between Dark/Light at the top right. Each SVG has built-in dual-theme support — Anti Gravity just adds <code>class="light"</code> to the parent of the SVG content (or applies a CSS variable swap) and the colors switch automatically.
+</div>
+
+</div>
+
+<script>
+const body = document.body;
+const bDark = document.getElementById('bDark');
+const bLight = document.getElementById('bLight');
+
+function setTheme(t){
+  body.className = t;
+  bDark.classList.toggle('on', t === 'dark');
+  bLight.classList.toggle('on', t === 'light');
+  // propagate theme into SVG <object> documents
+  document.querySelectorAll('object').forEach(obj => {
+    const apply = () => {
+      try {
+        const svg = obj.contentDocument && obj.contentDocument.querySelector('svg');
+        if (svg) {
+          if (t === 'light') svg.classList.add('light');
+          else svg.classList.remove('light');
+        }
+      } catch(e) {}
+    };
+    if (obj.contentDocument) apply();
+    else obj.addEventListener('load', apply, { once: true });
+  });
+}
+
+bDark.addEventListener('click', () => setTheme('dark'));
+bLight.addEventListener('click', () => setTheme('light'));
+
+// initial application after objects load
+window.addEventListener('load', () => setTheme(body.className));
+</script>
+</body>
+</html>

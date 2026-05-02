@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380" role="img" aria-label="A MacBook displaying a marketing website with traffic light buttons, a hero headline, and a primary call-to-action button.">
+  <style>
+    .bg-card{fill:#0a0a0a}
+    .laptop-body{fill:#1a1a1c}
+    .laptop-bezel{fill:#000}
+    .laptop-screen{fill:#0d0d0d}
+    .laptop-base-shadow{fill:#0a0a0a}
+    .laptop-hinge{fill:#0a0a0a}
+    .text-strong{fill:rgba(255,255,255,0.92)}
+    .text-mid{fill:rgba(255,255,255,0.32)}
+    .text-soft{fill:rgba(255,255,255,0.18)}
+    .url-bar{fill:#0a0a0a;stroke:rgba(255,255,255,0.08)}
+    .feature-card{fill:rgba(255,255,255,0.04);stroke:rgba(255,255,255,0.08)}
+    .titlebar{fill:#141414}
+    .border-faint{stroke:rgba(255,255,255,0.06)}
+    .btn-primary{fill:#fff}
+    .btn-primary-text{fill:#0a0a0a}
+    .btn-secondary-stroke{stroke:rgba(255,255,255,0.22)}
+    .btn-secondary-text{fill:rgba(255,255,255,0.55)}
+    .small-icon{fill:rgba(255,255,255,0.4)}
+
+    .light .bg-card{fill:#F5F5F7}
+    .light .laptop-body{fill:#C8C8CC}
+    .light .laptop-bezel{fill:#1a1a1a}
+    .light .laptop-screen{fill:#fff}
+    .light .laptop-base-shadow{fill:#A8A8AC}
+    .light .laptop-hinge{fill:#888}
+    .light .text-strong{fill:#0a0a0a}
+    .light .text-mid{fill:rgba(0,0,0,0.45)}
+    .light .text-soft{fill:rgba(0,0,0,0.25)}
+    .light .url-bar{fill:#F0F0F2;stroke:rgba(0,0,0,0.08)}
+    .light .feature-card{fill:#FAFAFC;stroke:rgba(0,0,0,0.06)}
+    .light .titlebar{fill:#F5F5F7}
+    .light .border-faint{stroke:rgba(0,0,0,0.08)}
+    .light .btn-primary{fill:#0a0a0a}
+    .light .btn-primary-text{fill:#fff}
+    .light .btn-secondary-stroke{stroke:rgba(0,0,0,0.22)}
+    .light .btn-secondary-text{fill:rgba(0,0,0,0.55)}
+    .light .small-icon{fill:rgba(0,0,0,0.5)}
+  </style>
+
+  <rect width="600" height="380" class="bg-card"/>
+
+  <!-- MacBook frame -->
+  <g transform="translate(60 38)">
+    <!-- screen lid -->
+    <rect width="480" height="282" rx="14" class="laptop-bezel"/>
+    <!-- camera notch indicator -->
+    <circle cx="240" cy="9" r="1.4" fill="#1a1a1a"/>
+    <!-- screen content area -->
+    <rect x="9" y="16" width="462" height="258" rx="3" class="laptop-screen"/>
+
+    <!-- browser title bar -->
+    <rect x="9" y="16" width="462" height="26" class="titlebar"/>
+    <line x1="9" y1="42" x2="471" y2="42" class="border-faint" stroke-width="0.5"/>
+
+    <!-- traffic lights -->
+    <circle cx="24" cy="29" r="4.6" fill="#FF5F57"/>
+    <circle cx="22.5" cy="27.5" r="0.9" fill="rgba(255,255,255,0.35)"/>
+    <circle cx="40" cy="29" r="4.6" fill="#FEBC2E"/>
+    <circle cx="38.5" cy="27.5" r="0.9" fill="rgba(255,255,255,0.35)"/>
+    <circle cx="56" cy="29" r="4.6" fill="#28C840"/>
+    <circle cx="54.5" cy="27.5" r="0.9" fill="rgba(255,255,255,0.35)"/>
+
+    <!-- nav arrows -->
+    <path d="M 78 27 l -3 2 l 3 2" stroke-width="0.8" fill="none" class="small-icon" stroke="currentColor"/>
+    <path d="M 88 27 l 3 2 l -3 2" stroke-width="0.8" fill="none" stroke="currentColor" class="small-icon"/>
+
+    <!-- URL pill -->
+    <rect x="186" y="22" width="140" height="14" rx="3" class="url-bar" stroke-width="0.5"/>
+    <circle cx="195" cy="29" r="2" class="small-icon"/>
+    <rect x="201" y="27.5" width="64" height="2.5" rx="1" class="text-strong" opacity="0.7"/>
+    <rect x="268" y="27.5" width="40" height="2.5" rx="1" class="text-mid"/>
+
+    <!-- hero content -->
+    <g transform="translate(48 80)">
+      <!-- eyebrow -->
+      <rect x="0" y="0" width="58" height="5" rx="1" class="text-mid"/>
+
+      <!-- headline -->
+      <rect x="0" y="18" width="320" height="13" rx="2" class="text-strong"/>
+      <rect x="0" y="38" width="240" height="13" rx="2" class="text-strong"/>
+
+      <!-- body lines -->
+      <rect x="0" y="68" width="360" height="4" rx="1" class="text-mid"/>
+      <rect x="0" y="78" width="340" height="4" rx="1" class="text-mid"/>
+      <rect x="0" y="88" width="280" height="4" rx="1" class="text-mid"/>
+
+      <!-- primary CTA pill -->
+      <rect x="0" y="108" width="116" height="30" rx="15" class="btn-primary"/>
+      <rect x="38" y="121" width="40" height="3.5" rx="1" class="btn-primary-text"/>
+
+      <!-- secondary CTA -->
+      <rect x="128" y="108" width="116" height="30" rx="15" fill="none" class="btn-secondary-stroke" stroke-width="0.7"/>
+      <rect x="158" y="121" width="56" height="3.5" rx="1" class="btn-secondary-text"/>
+    </g>
+
+    <!-- right-side feature cards -->
+    <g transform="translate(348 80)">
+      <rect x="0" y="0" width="120" height="48" rx="6" class="feature-card" stroke-width="0.5"/>
+      <circle cx="14" cy="14" r="4" class="text-strong" opacity="0.55"/>
+      <rect x="24" y="11" width="56" height="3" rx="1" class="text-strong" opacity="0.7"/>
+      <rect x="24" y="18" width="76" height="2.5" rx="1" class="text-mid"/>
+      <rect x="14" y="30" width="92" height="2" rx="1" class="text-mid" opacity="0.7"/>
+      <rect x="14" y="36" width="74" height="2" rx="1" class="text-mid" opacity="0.7"/>
+
+      <rect x="0" y="58" width="120" height="48" rx="6" class="feature-card" stroke-width="0.5"/>
+      <circle cx="14" cy="72" r="4" class="text-strong" opacity="0.55"/>
+      <rect x="24" y="69" width="46" height="3" rx="1" class="text-strong" opacity="0.7"/>
+      <rect x="24" y="76" width="64" height="2.5" rx="1" class="text-mid"/>
+      <rect x="14" y="88" width="92" height="2" rx="1" class="text-mid" opacity="0.7"/>
+      <rect x="14" y="94" width="68" height="2" rx="1" class="text-mid" opacity="0.7"/>
+    </g>
+
+    <!-- live indicator -->
+    <g transform="translate(48 240)">
+      <circle cx="3" cy="3" r="3" fill="#28C840"/>
+      <circle cx="3" cy="3" r="3" fill="#28C840" opacity="0.4">
+        <animate attributeName="r" from="3" to="7" dur="1.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.4" to="0" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="13" y="1.5" width="60" height="3" rx="1" class="text-strong" opacity="0.55"/>
+      <rect x="78" y="1.5" width="40" height="3" rx="1" class="text-mid"/>
+    </g>
+
+    <!-- MacBook base -->
+    <rect x="-30" y="290" width="540" height="6" rx="2" class="laptop-body"/>
+    <rect x="-30" y="290" width="540" height="2" class="laptop-base-shadow" opacity="0.4"/>
+    <!-- hinge notch -->
+    <rect x="216" y="290" width="48" height="3" rx="1.5" class="laptop-hinge"/>
+  </g>
+</svg>

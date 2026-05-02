@@ -1,365 +1,460 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, animate, useInView } from 'framer-motion';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { Box, Database, Globe, Layout, Smartphone, Cloud, Shield, Server, Cpu, Layers, HardDrive, Wifi } from 'lucide-react';
+import React, { useRef, Suspense, lazy, Component } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, Dot, BarChart, Bar, Cell, CartesianGrid, ReferenceDot, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
+import { NumberTicker } from '@/components/ui/number-ticker';
+import { AnimatedList } from '@/components/ui/animated-list';
+const World = lazy(() => import('@/components/ui/globe').then(m => ({ default: m.World })));
 
-const AnimatedCounter = ({ from = 0, to, duration = 2.5, startAnimation = false, format = (v) => v }) => {
-  const nodeRef = useRef(null);
-  useEffect(() => {
-    if (!startAnimation) return;
-    const node = nodeRef.current;
-    if (!node) return;
-    const controls = animate(from, to, {
-      duration: duration,
-      ease: "easeOut",
-      onUpdate(value) {
-        node.textContent = format(value);
-      }
-    });
-    return () => controls.stop();
-  }, [from, to, duration, startAnimation, format]);
-  return <span ref={nodeRef}>{format(from)}</span>;
+class GlobeErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(ellipse at center, rgba(56,189,248,0.08) 0%, transparent 70%)' }}>
+          <div style={{ width: '200px', height: '200px', borderRadius: '50%', border: '1px solid var(--color-overlay-20)', background: 'radial-gradient(ellipse at 30% 30%, rgba(56,189,248,0.15), transparent 70%)', boxShadow: '0 0 60px rgba(56,189,248,0.1)' }} />
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const toolInvoices = [
+  { name: 'Salesforce', cost: 150, color: '#00A1E0' },
+  { name: 'HubSpot', cost: 120, color: '#FF7A59' },
+  { name: 'Slack', cost: 15, color: '#E01E5A' },
+  { name: 'Zoom', cost: 20, color: '#2D8CFF' },
+  { name: 'Monday.com', cost: 35, color: '#FF3D57' },
+  { name: 'DocuSign', cost: 40, color: '#FFE000' },
+  { name: 'Notion', cost: 25, color: '#000000' },
+  { name: 'Zendesk', cost: 90, color: '#03363D' },
+  { name: 'Asana', cost: 30, color: '#F06A6A' },
+  { name: 'Mailchimp', cost: 45, color: '#FFE01B' },
+  { name: 'Zapier', cost: 60, color: '#FF4A00' },
+];
+
+const adminData = [{ name: 'Time', admin: 16, core: 24 }];
+
+const monthlyBarData = [
+  { month: 'Jan', bounced: 97, converted: 3 },
+  { month: 'Feb', bounced: 96, converted: 4 },
+  { month: 'Mar', bounced: 98, converted: 2 },
+  { month: 'Apr', bounced: 95, converted: 5 },
+  { month: 'May', bounced: 97, converted: 3 },
+  { month: 'Jun', bounced: 96, converted: 4 },
+];
+
+const speedData = [
+  { time: '5m', lost: 0 },
+  { time: '30m', lost: 55 },
+  { time: '1hr', lost: 81.2 },
+  { time: '12hr', lost: 90 },
+  { time: '24hr', lost: 92 },
+  { time: '47hr', lost: 95 },
+];
+
+const gapData = [
+  { year: '2023', ai: 10, legacy: 8 },
+  { year: '2023.5', ai: 35, legacy: 10 },
+  { year: '2024', ai: 65, legacy: 12 },
+  { year: '2024.5', ai: 90, legacy: 13 },
+  { year: '2025', ai: 120, legacy: 14 },
+  { year: '2025.5', ai: 140, legacy: 14.5 },
+  { year: '2026', ai: 170, legacy: 15 }
+];
+
+const globeArcs = [
+  { order: 1, startLat: 40.7128, startLng: -74.006, endLat: 51.5074, endLng: -0.1278, arcAlt: 0.3, color: '#ef4444' },
+  { order: 2, startLat: 35.6762, startLng: 139.6503, endLat: 22.3193, endLng: 114.1694, arcAlt: 0.2, color: '#ef4444' },
+  { order: 3, startLat: -33.8688, startLng: 151.2093, endLat: 1.3521, endLng: 103.8198, arcAlt: 0.3, color: '#ef4444' },
+  { order: 4, startLat: 48.8566, startLng: 2.3522, endLat: 25.2048, endLng: 55.2708, arcAlt: 0.3, color: '#ef4444' },
+  { order: 5, startLat: 34.0522, startLng: -118.2437, endLat: 19.4326, endLng: -99.1332, arcAlt: 0.2, color: '#ef4444' },
+  { order: 6, startLat: 55.7558, startLng: 37.6173, endLat: 28.6139, endLng: 77.209, arcAlt: 0.4, color: '#ef4444' },
+];
+
+const globeConfig = {
+  pointSize: 4,
+  globeColor: '#0a0a12',
+  showAtmosphere: true,
+  atmosphereColor: '#ffffff',
+  atmosphereAltitude: 0.1,
+  emissive: '#0a0a12',
+  emissiveIntensity: 0.1,
+  shininess: 0.9,
+  polygonColor: 'rgba(255,255,255,0.15)',
+  ambientLight: '#38bdf8',
+  directionalLeftLight: '#ffffff',
+  directionalTopLight: '#ffffff',
+  pointLight: '#ffffff',
+  arcTime: 1000,
+  arcLength: 0.9,
+  rings: 1,
+  maxRings: 3,
+  initialPosition: { lat: 22.3193, lng: 114.1694 },
+  autoRotate: true,
+  autoRotateSpeed: 0.5,
 };
 
-// Card 1: 97% Massive Number
-const Card1 = ({ isInView }) => (
-  <div className="bento-card card-span-2">
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <h3 className="bento-title">Your visitors are leaving</h3>
-      <p className="bento-subtitle" style={{ maxWidth: '400px' }}>
-        Most traffic never becomes a lead, because the storefront feels like a brochure, not a conversion engine.
-      </p>
-      <div style={{ marginTop: 'auto', paddingTop: '40px' }}>
-        <div style={{ fontSize: 'clamp(80px, 10vw, 140px)', fontWeight: 700, lineHeight: 0.9, color: '#FFFFFF', letterSpacing: '-0.04em' }}>
-          <AnimatedCounter startAnimation={isInView} from={0} to={97} format={(v) => Math.round(v) + '%'} />
-        </div>
-        <div style={{ color: 'var(--color-overlay-40)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '12px' }}>
-          of visitors never convert on an average site
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
-// Card 2: 47 Hours
-const Card2 = ({ isInView }) => (
-  <div className="bento-card card-span-1">
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <h3 className="bento-title">You're answering too late</h3>
-      <p className="bento-subtitle">
-        While your team is busy, a 47-hour response window silently hands deals to faster competitors.
-      </p>
-      <div style={{ marginTop: 'auto', paddingTop: '40px' }}>
-        <div style={{ fontSize: 'clamp(48px, 6vw, 72px)', fontWeight: 700, lineHeight: 1, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
-          <AnimatedCounter startAnimation={isInView} from={0} to={47} duration={3} format={(v) => Math.round(v)} />
-          <span style={{ fontSize: '32px', color: 'var(--color-overlay-60)', marginLeft: '8px' }}>hrs</span>
-        </div>
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={isInView ? { width: '100%' } : { width: 0 }}
-          transition={{ duration: 2, delay: 0.5, ease: 'easeOut' }}
-          style={{ height: '2px', background: 'var(--color-accent)', marginTop: '16px', position: 'relative' }}
-        >
-          {/* Tick marks */}
-          <div style={{ position: 'absolute', right: 0, top: '-4px', width: '2px', height: '10px', background: 'var(--color-accent)' }} />
-          <div style={{ position: 'absolute', left: 0, top: '-4px', width: '2px', height: '10px', background: 'var(--color-accent)' }} />
-        </motion.div>
-        <div style={{ color: 'var(--color-overlay-40)', fontSize: '12px', marginTop: '12px' }}>
-          Average B2B lead response time
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// Card 3: 78% First Responder
-const Card3 = ({ isInView }) => {
-  return (
-    <div className="bento-card card-span-2" style={{ position: 'relative', overflow: 'hidden' }}>
-      {/* Background flare */}
-      <motion.div 
-        animate={isInView ? { opacity: [0.1, 0.3, 0.1] } : {}}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%)', filter: 'blur(40px)', zIndex: 0 }} 
-      />
-      
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', zIndex: 1 }}>
-        <h3 className="bento-title">First call, first close</h3>
-        <p className="bento-subtitle" style={{ maxWidth: '400px' }}>
-          Speed to lead isn’t just nice to have—78% of buyers will pick the company that answers first.
-        </p>
-        
-        <div style={{ marginTop: 'auto', paddingTop: '40px', display: 'flex', alignItems: 'center', gap: '24px' }}>
-          <motion.div 
-            animate={isInView ? { 
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-            } : {}}
-            transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-            style={{ 
-              fontSize: 'clamp(64px, 8vw, 96px)', 
-              fontWeight: 700, 
-              lineHeight: 1, 
-              letterSpacing: '-0.02em',
-              background: 'linear-gradient(90deg, #FFFFFF, var(--color-accent), #FFFFFF)',
-              backgroundSize: '200% auto',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'inline-block'
-            }}
-          >
-            <AnimatedCounter startAnimation={isInView} from={0} to={78} format={(v) => Math.round(v) + '%'} />
-          </motion.div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 1, duration: 0.5 }}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-accent)' }} />
-              <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 500 }}>First Responder Win Rate</span>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 1.2, duration: 0.5 }}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-overlay-20)' }} />
-              <span style={{ color: 'var(--color-overlay-40)', fontSize: '14px' }}>Second Responder Win Rate</span>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+const GapDot = (props) => {
+  const { cx, cy, payload, dataKey } = props;
+  if (payload.year === '2025') {
+    if (dataKey === 'ai') {
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r={4} fill="var(--color-text-primary)" />
+          <text x={cx + 12} y={cy + 4} fill="var(--color-text-primary)" fontSize="14" fontWeight="700" textAnchor="start">+147%</text>
+        </g>
+      );
+    }
+    if (dataKey === 'legacy') {
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r={4} fill="var(--color-overlay-30)" />
+          <text x={cx + 12} y={cy + 4} fill="var(--color-text-secondary)" fontSize="14" fontWeight="700" textAnchor="start">+11%</text>
+        </g>
+      );
+    }
+  }
+  return null;
 };
-
-// Card 4: 81.2% Donut Chart
-const Card4 = ({ isInView }) => {
-  const data = [
-    { name: 'Lost', value: 81.2 },
-    { name: 'Retained', value: 18.8 }
-  ];
-  return (
-    <div className="bento-card card-span-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-      <h3 className="bento-title" style={{ width: '100%' }}>The 60-minute penalty</h3>
-      <p className="bento-subtitle" style={{ width: '100%' }}>
-        If your team waits longer than an hour, most leads are already gone.
-      </p>
-      
-      <div style={{ width: '100%', height: '160px', marginTop: '24px', position: 'relative' }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <defs>
-              <linearGradient id="colorLost" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#EF4444" />
-                <stop offset="100%" stopColor="#D4A056" />
-              </linearGradient>
-            </defs>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={75}
-              startAngle={90}
-              endAngle={-270}
-              dataKey="value"
-              stroke="none"
-              isAnimationActive={isInView}
-              animationDuration={1500}
-            >
-              <Cell fill="url(#colorLost)" />
-              <Cell fill="var(--color-overlay-10)" />
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#FFFFFF', fontSize: '24px', fontWeight: 700 }}>
-          <AnimatedCounter startAnimation={isInView} from={0} to={81.2} format={(v) => v.toFixed(1) + '%'} />
-        </div>
-      </div>
-      <div style={{ color: '#EF4444', fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '16px' }}>
-        Leads lost after 1 hour
-      </div>
-    </div>
-  );
-};
-
-// Card 5: 106+ Apps Grid
-const Card5 = ({ isInView }) => {
-  const icons = [Box, Database, Globe, Layout, Smartphone, Cloud, Shield, Server, Cpu, Layers, HardDrive, Wifi];
-  
-  return (
-    <div className="bento-card card-span-1">
-      <h3 className="bento-title">You're juggling 106+ tools</h3>
-      <p className="bento-subtitle">
-        The average scaling business manages over 100 disconnected apps, each eating time and clarity.
-      </p>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginTop: '32px' }}>
-        {icons.map((Icon, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: 0.5 + (i * 0.05), type: 'spring', stiffness: 200, damping: 10 }}
-            style={{
-              aspectRatio: '1',
-              backgroundColor: 'var(--color-overlay-05)',
-              border: '1px solid var(--color-overlay-10)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--color-overlay-40)'
-            }}
-          >
-            <Icon size={16} />
-          </motion.div>
-        ))}
-      </div>
-      <div style={{ color: 'var(--color-overlay-40)', fontSize: '12px', marginTop: '24px', textAlign: 'center', fontWeight: 500 }}>
-        + 94 more running in the background
-      </div>
-    </div>
-  );
-};
-
-// Card 6: 87% Custom Bar
-const Card6 = ({ isInView }) => (
-  <div className="bento-card card-span-2">
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <h3 className="bento-title">Your tech isn't paying off</h3>
-      <p className="bento-subtitle">
-        Despite the licenses and integrations, 87% of operations leaders say their stack fails to deliver the expected ROI.
-      </p>
-      
-      <div style={{ marginTop: 'auto', paddingTop: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <div style={{ color: '#EF4444', fontSize: '14px', fontWeight: 600 }}>Underdelivers ROI</div>
-          <div style={{ color: 'var(--color-accent)', fontSize: '14px', fontWeight: 600 }}>Successful</div>
-        </div>
-        
-        {/* Progress Bar Container */}
-        <div style={{ width: '100%', height: '24px', backgroundColor: 'var(--color-overlay-10)', borderRadius: '12px', overflow: 'hidden', display: 'flex' }}>
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={isInView ? { width: '87%' } : {}}
-            transition={{ duration: 1.5, ease: 'easeOut', delay: 0.5 }}
-            style={{ height: '100%', backgroundColor: '#EF4444' }}
-          />
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={isInView ? { width: '13%' } : {}}
-            transition={{ duration: 1.5, ease: 'easeOut', delay: 0.5 }}
-            style={{ height: '100%', backgroundColor: 'var(--color-accent)' }}
-          />
-        </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
-          <div style={{ fontSize: '32px', fontWeight: 700, color: '#FFFFFF' }}>
-            <AnimatedCounter startAnimation={isInView} from={0} to={87} delay={0.5} format={(v) => Math.round(v) + '%'} />
-          </div>
-          <div style={{ fontSize: '32px', fontWeight: 700, color: '#FFFFFF' }}>
-            <AnimatedCounter startAnimation={isInView} from={0} to={13} delay={0.5} format={(v) => Math.round(v) + '%'} />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 export default function AgitationSection() {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.1 });
 
+  const cardStyle = {
+    backgroundColor: 'var(--color-overlay-05)',
+    border: '1px solid var(--color-overlay-10)',
+    borderRadius: '16px',
+    padding: '48px',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '460px',
+  };
+
+  const topHalf = {
+    height: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px'
+  };
+
+  const bottomHalf = {
+    height: '50%',
+    display: 'flex',
+    alignItems: 'flex-end',
+    position: 'relative'
+  };
+
+  const headlineStyle = {
+    fontSize: '28px', 
+    fontWeight: 600, 
+    color: 'var(--color-text-primary)', 
+    fontFamily: 'var(--font-display)', 
+    letterSpacing: '-0.02em',
+    lineHeight: 1.1
+  };
+
+  const heroStyle = {
+    fontSize: '56px', 
+    fontWeight: 700, 
+    fontFamily: 'var(--font-display)', 
+    lineHeight: 1, 
+    letterSpacing: '-0.03em',
+    background: 'linear-gradient(to right, #ff4d4d, #ef4444, #991b1b, #dc2626, #ff4d4d)',
+    backgroundSize: '300% auto',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    display: 'inline-block',
+    animation: 'redGradient 6s linear infinite'
+  };
+
+  const heroSecondaryStyle = {
+    fontSize: '24px', 
+    color: 'var(--color-text-secondary)', 
+    letterSpacing: '0',
+    WebkitTextFillColor: 'var(--color-text-secondary)',
+    fontWeight: 500,
+    verticalAlign: 'baseline',
+    marginLeft: '4px'
+  };
+
   return (
-    <section className="section container" style={{ padding: '120px 0' }}>
-      
-      <div className="text-eyebrow" style={{ textAlign: 'center', marginBottom: '24px' }}>
-        The Reality Check
+    <section className="section container" style={{ position: 'relative' }}>
+      <div className={`reveal ${isInView ? 'is-visible' : ''}`} style={{ marginBottom: '80px' }}>
+        <h2 className="text-section-title" style={{ color: 'var(--color-text-primary)' }}>
+          Friction is stealing your revenue.
+        </h2>
       </div>
-      <h2 className="text-section-title" style={{ textAlign: 'center', marginBottom: '64px' }}>
-        Friction is stealing your revenue.
-      </h2>
 
       <div 
         ref={containerRef}
-        className="bento-grid-wrapper"
+        className={`reveal ${isInView ? 'is-visible' : ''}`}
+        style={{
+          transitionDelay: '100ms',
+          display: 'grid',
+          gap: '24px',
+          gridTemplateColumns: 'repeat(1, 1fr)'
+        }}
       >
-        <Card1 isInView={isInView} />
-        <Card4 isInView={isInView} />
-        <Card2 isInView={isInView} />
-        <Card3 isInView={isInView} />
-        <Card5 isInView={isInView} />
-        <Card6 isInView={isInView} />
+        <style>{`
+          @keyframes redGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @media (min-width: 1024px) {
+            .agitation-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+          }
+        `}</style>
+
+        <div className="agitation-grid" style={{ display: 'grid', gap: '24px', gridTemplateColumns: '1fr' }}>
+          
+          {/* Card 1: Storefront Leaks */}
+          <div style={cardStyle}>
+            <div style={topHalf}>
+              <h3 style={headlineStyle}>Storefront leaks</h3>
+              <div style={heroStyle}>
+                <NumberTicker value={97} />%
+              </div>
+              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '400px' }}>
+                Most traffic never converts because the storefront feels like a brochure.
+              </p>
+            </div>
+            
+            <div style={{...bottomHalf, width: '100%', position: 'relative'}}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyBarData} margin={{ top: 12, right: 8, left: -20, bottom: 0 }} stackOffset="expand" barCategoryGap="20%">
+                  <CartesianGrid vertical={false} stroke="var(--color-overlay-10)" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} dy={6} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--color-overlay-05)', border: '1px solid var(--color-overlay-10)', borderRadius: '8px', color: 'var(--color-text-primary)' }} formatter={(value, name) => [`${value}%`, name === 'bounced' ? 'Bounced' : 'Converted']} labelStyle={{ color: 'var(--color-text-secondary)' }} />
+                  <Bar dataKey="bounced" stackId="a" fill="#ef4444" radius={[0, 0, 0, 0]} isAnimationActive={isInView} animationDuration={1500} />
+                  <Bar dataKey="converted" stackId="a" fill="var(--color-text-primary)" radius={[4, 4, 0, 0]} isAnimationActive={isInView} animationDuration={1500} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Card 2: Speed-to-lead */}
+          <div style={cardStyle}>
+            <div style={topHalf}>
+              <h3 style={headlineStyle}>The speed-to-lead penalty</h3>
+              <div style={heroStyle}>
+                <NumberTicker value={81.2} decimalPlaces={1} />% <span style={heroSecondaryStyle}>LOST</span>
+              </div>
+              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '400px' }}>
+                While your team is busy, slow response windows silently hand deals to faster competitors.
+              </p>
+            </div>
+            
+            <div style={{...bottomHalf, width: '100%'}}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={speedData} margin={{ top: 24, left: -20, right: 16, bottom: 0 }}>
+                  <CartesianGrid vertical={false} stroke="var(--color-overlay-10)" />
+                  <XAxis 
+                    dataKey="time" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} 
+                    tickMargin={10} 
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} 
+                    tickFormatter={(value) => `${value}%`} 
+                    reversed={true}
+                  />
+                  <Tooltip 
+                    cursor={{ stroke: 'var(--color-overlay-20)', strokeWidth: 2 }}
+                    contentStyle={{ backgroundColor: 'var(--color-overlay-05)', border: '1px solid var(--color-overlay-10)', borderRadius: '8px', color: 'var(--color-text-primary)' }}
+                    itemStyle={{ color: '#ef4444', fontWeight: 600 }}
+                    formatter={(value) => [`${value}% Lost`, 'Leads']}
+                    labelStyle={{ color: 'var(--color-text-secondary)' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="lost" 
+                    stroke="#ef4444" 
+                    strokeWidth={3} 
+                    dot={false}
+                    activeDot={{ r: 6, fill: '#ef4444', stroke: 'var(--color-text-primary)', strokeWidth: 2 }}
+                    isAnimationActive={isInView} 
+                    animationDuration={1500}
+                  />
+                  <ReferenceDot x="1hr" y={81.2} r={5} fill="#ef4444" stroke="var(--color-text-primary)" strokeWidth={2} isFront={true} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Card 3: The operational tax (Spans full width) */}
+          <div style={{ ...cardStyle, gridColumn: '1 / -1', height: 'auto', minHeight: '460px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            
+            {/* Header */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', textAlign: 'center' }}>
+              <h3 style={headlineStyle}>The operational tax</h3>
+            </div>
+
+            {/* Content Split */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '48px', alignItems: 'flex-start' }}>
+              
+              {/* Left Side: Subscription Sprawl */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span className="text-eyebrow" style={{ color: 'var(--color-text-primary)' }}>SUBSCRIPTION SPRAWL</span>
+                  <div style={heroStyle}>
+                    ~<NumberTicker value={6400} /><span style={heroSecondaryStyle}>/mo</span>
+                  </div>
+                  <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
+                    Recurring spend on overlapping tools and unused seats (20-person team).
+                  </p>
+                </div>
+                
+                <div style={{ height: '240px', overflow: 'hidden', position: 'relative', maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)' }}>
+                  <AnimatedList delay={1500}>
+                    {toolInvoices.map((tool, idx) => {
+                      const randomMins = [5, 12, 15, 22, 34, 45, 50, 58];
+                      const randomHours = [1, 2, 3, 4, 5];
+                      const timeStr = tool.cost > 50 ? `${randomMins[idx % randomMins.length]} mins ago` : `${randomHours[idx % randomHours.length]} hour${randomHours[idx % randomHours.length] > 1 ? 's' : ''} ago`;
+                      
+                      return (
+                      <div key={idx} style={{ padding: '16px 20px', background: 'var(--color-overlay-05)', borderRadius: '12px', border: '1px solid var(--color-overlay-10)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', width: '100%', maxWidth: '380px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: '16px' }}>
+                            {tool.name.charAt(0)}
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ color: 'var(--color-text-primary)', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>INVOICE</span>
+                              <span style={{ color: 'var(--color-text-secondary)', fontSize: '11px' }}>{timeStr}</span>
+                            </div>
+                            <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500, fontSize: '14px' }}>{tool.name}</span>
+                          </div>
+                        </div>
+                        <span style={{ color: '#ef4444', fontWeight: 600, fontSize: '16px' }}>-${tool.cost}</span>
+                      </div>
+                    )})}
+                  </AnimatedList>
+                </div>
+              </div>
+
+              {/* Right Side: Human Capital Drain */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span className="text-eyebrow" style={{ color: 'var(--color-text-primary)' }}>HUMAN CAPITAL DRAIN</span>
+                  <div style={heroStyle}>
+                    <NumberTicker value={40} />%
+                  </div>
+                  <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
+                    Of your team's week lost to admin a system should handle.
+                  </p>
+                </div>
+
+                <div style={{ height: '240px', width: '100%', position: 'relative' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadialBarChart 
+                      innerRadius="50%" 
+                      outerRadius="100%" 
+                      data={adminData} 
+                      startAngle={180} 
+                      endAngle={0}
+                      cy="60%"
+                    >
+                      <PolarAngleAxis type="number" domain={[0, 40]} angleAxisId={0} tick={false} />
+                      <RadialBar dataKey="core" stackId="a" fill="var(--color-overlay-20)" cornerRadius={6} />
+                      <RadialBar dataKey="admin" stackId="a" fill="#ef4444" cornerRadius={6} />
+                    </RadialBarChart>
+                  </ResponsiveContainer>
+                  <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
+                      <span className="text-eyebrow" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Admin (16 hrs)</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-overlay-30)' }} />
+                      <span className="text-eyebrow" style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Core (24 hrs)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: The Intelligence Gap */}
+          <div style={cardStyle}>
+            <div style={topHalf}>
+              <h3 style={headlineStyle}>The intelligence gap</h3>
+              <div style={heroStyle}>
+                <NumberTicker value={2.5} decimalPlaces={1} />x
+              </div>
+              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '400px' }}>
+                Those who adapt are pulling away at exponential rates while legacy businesses flatline.
+              </p>
+            </div>
+            
+            <div style={{...bottomHalf, width: '100%'}}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={gapData} margin={{ top: 12, right: 16, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="aiStrokeGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#F59E0B">
+                        <animate attributeName="stop-color" values="#F59E0B;#3B82F6;#8B5CF6;#10B981;#F59E0B" dur="4s" repeatCount="indefinite" />
+                      </stop>
+                      <stop offset="33%" stopColor="#3B82F6">
+                        <animate attributeName="stop-color" values="#3B82F6;#8B5CF6;#10B981;#F59E0B;#3B82F6" dur="4s" repeatCount="indefinite" />
+                      </stop>
+                      <stop offset="66%" stopColor="#8B5CF6">
+                        <animate attributeName="stop-color" values="#8B5CF6;#10B981;#F59E0B;#3B82F6;#8B5CF6" dur="4s" repeatCount="indefinite" />
+                      </stop>
+                      <stop offset="100%" stopColor="#10B981">
+                        <animate attributeName="stop-color" values="#10B981;#F59E0B;#3B82F6;#8B5CF6;#10B981" dur="4s" repeatCount="indefinite" />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="aiFillGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="legacyFillGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--color-overlay-20)" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="var(--color-overlay-20)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} stroke="var(--color-overlay-10)" />
+                  <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} dy={6} ticks={['2023', '2024', '2025', '2026']} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-secondary)', fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--color-overlay-05)', border: '1px solid var(--color-overlay-10)', borderRadius: '8px', color: 'var(--color-text-primary)' }} formatter={(value, name) => [`${value}%`, name === 'ai' ? 'AI-Adopters' : 'Legacy']} labelStyle={{ color: 'var(--color-text-secondary)' }} />
+                  <Area type="monotone" dataKey="legacy" stroke="var(--color-overlay-30)" strokeWidth={2} fill="url(#legacyFillGradient)" dot={false} isAnimationActive={isInView} animationDuration={2500} />
+                  <Area type="monotone" dataKey="ai" stroke="url(#aiStrokeGradient)" strokeWidth={3} fill="url(#aiFillGradient)" dot={false} isAnimationActive={isInView} animationDuration={2500} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Card 5: Competing locally */}
+          <div style={{...cardStyle, position: 'relative', overflow: 'hidden'}}>
+            <div style={{...topHalf, zIndex: 2, position: 'relative'}}>
+              <h3 style={headlineStyle}>You are competing locally, not globally</h3>
+              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '400px' }}>
+                While you optimize for your city, AI-native competitors are capturing markets across continents — 24/7, in every language.
+              </p>
+            </div>
+            <div style={{ position: 'absolute', inset: 0, zIndex: 1, opacity: 0.85 }}>
+              <GlobeErrorBoundary>
+                <Suspense fallback={<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>Loading globe...</div>}>
+                  <World globeConfig={globeConfig} data={globeArcs} />
+                </Suspense>
+              </GlobeErrorBoundary>
+            </div>
+          </div>
+
+        </div>
       </div>
-
-      <style>{`
-        .bento-grid-wrapper {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-          width: 100%;
-        }
-
-        .bento-card {
-          background-color: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 24px;
-          padding: 40px;
-          transition: background-color 300ms ease, border-color 300ms ease;
-        }
-
-        .bento-card:hover {
-          background-color: rgba(255, 255, 255, 0.04);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .bento-title {
-          font-size: 24px;
-          font-weight: 600;
-          color: #FFFFFF;
-          margin-bottom: 12px;
-          line-height: 1.2;
-        }
-
-        .bento-subtitle {
-          color: #9CA3AF;
-          font-size: 15px;
-          line-height: 1.6;
-        }
-
-        .card-span-2 {
-          grid-column: span 2;
-        }
-        .card-span-1 {
-          grid-column: span 1;
-        }
-
-        @media (max-width: 1024px) {
-          .bento-grid-wrapper {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .card-span-2, .card-span-1 {
-            grid-column: span 1; /* Reset logic for tablet */
-          }
-          /* Custom tablet logic */
-          .bento-grid-wrapper > :nth-child(1) { grid-column: span 2; }
-          .bento-grid-wrapper > :nth-child(4) { grid-column: span 2; }
-          .bento-grid-wrapper > :nth-child(6) { grid-column: span 2; }
-        }
-
-        @media (max-width: 768px) {
-          .bento-grid-wrapper {
-            grid-template-columns: 1fr;
-          }
-          .bento-grid-wrapper > * {
-            grid-column: span 1 !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
