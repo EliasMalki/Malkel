@@ -49,10 +49,9 @@ export default function AuroraSweep() {
       const centerY = height / 2;
 
       const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-      ctx.globalCompositeOperation = isLightMode ? 'multiply' : 'screen';
-      
-      // In light mode, bump the opacity to make the colors punch through the white background
-      const themeOpacity = isLightMode ? 2.0 : 1.0;
+      ctx.globalCompositeOperation = isLightMode ? 'source-over' : 'screen';
+
+      const themeOpacity = isLightMode ? 0.58 : 1.0;
 
       const drawAbstractSweep = (hue1, hue2, amplitude, frequency, speed, verticalOffset, opacity, scale) => {
         ctx.beginPath();
@@ -72,8 +71,13 @@ export default function AuroraSweep() {
 
         const baseOpacity = opacity * themeOpacity;
         const gradient = ctx.createLinearGradient(0, centerY - amplitude, width * scale, height);
-        gradient.addColorStop(0, `hsla(${hue1}, 100%, 40%, ${baseOpacity * 1.8})`);
-        gradient.addColorStop(0.5, `hsla(${hue2}, 100%, 30%, ${baseOpacity * 1.4})`);
+        const saturation = isLightMode ? 86 : 100;
+        const firstLightness = isLightMode ? 68 : 40;
+        const secondLightness = isLightMode ? 74 : 30;
+        const firstAlpha = isLightMode ? baseOpacity * 0.8 : baseOpacity * 1.8;
+        const secondAlpha = isLightMode ? baseOpacity * 0.62 : baseOpacity * 1.4;
+        gradient.addColorStop(0, `hsla(${hue1}, ${saturation}%, ${firstLightness}%, ${firstAlpha})`);
+        gradient.addColorStop(0.5, `hsla(${hue2}, ${saturation}%, ${secondLightness}%, ${secondAlpha})`);
         gradient.addColorStop(1, 'transparent');
 
         ctx.fillStyle = gradient;
@@ -92,15 +96,17 @@ export default function AuroraSweep() {
       drawAbstractSweep(340, 310, height * 0.36, 0.0019, 1.7, height * -0.05, 0.25, 1.1);
       drawAbstractSweep(290, 230, height * 0.42, 0.0014, 1.1, height * 0.1, 0.22, 1.3);
 
-      // Hole Punch Mask
-      ctx.globalCompositeOperation = 'destination-out';
-      const maskY = height * 0.5;
-      const maskGradient = ctx.createRadialGradient(width / 2, maskY, 0, width / 2, maskY, height * 0.75);
-      maskGradient.addColorStop(0, 'rgba(0,0,0,1)');
-      maskGradient.addColorStop(0.35, 'rgba(0,0,0,0.85)');
-      maskGradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = maskGradient;
-      ctx.fillRect(0, 0, width, height);
+      if (!isLightMode) {
+        // Hole Punch Mask
+        ctx.globalCompositeOperation = 'destination-out';
+        const maskY = height * 0.5;
+        const maskGradient = ctx.createRadialGradient(width / 2, maskY, 0, width / 2, maskY, height * 0.75);
+        maskGradient.addColorStop(0, 'rgba(0,0,0,1)');
+        maskGradient.addColorStop(0.35, 'rgba(0,0,0,0.85)');
+        maskGradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = maskGradient;
+        ctx.fillRect(0, 0, width, height);
+      }
 
       ctx.restore();
 
@@ -137,7 +143,7 @@ export default function AuroraSweep() {
         opacity: isLoaded ? 1 : 0,
         transition: 'opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1)',
 
-        filter: 'blur(50px)'
+        filter: 'blur(56px) saturate(1.08)'
       }}
     />
   );

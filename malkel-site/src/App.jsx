@@ -18,16 +18,29 @@ function App() {
       <AuroraSweep />
       <Navigation />
       <main>
+        {/* 1. Hero */}
         <Hero />
-        <TrustMarquee />
+
+        {/* 2. Agitation */}
         <AgitationSection />
+
+        {/* 3. Ecosystem */}
         <EcosystemBento />
-        <Process />
-        <WhyMalkEl />
-        <FAQAccordion />
+
+        {/* 4. Recent Deployments */}
         <Projects />
-        <InTheWorks />
+
+        {/* 5. Comparison */}
+        <WhyMalkEl />
+
+        {/* 6. Audit Form */}
         <AuditForm />
+
+        {/* Hidden sections */}
+        {/* <TrustMarquee /> */}
+        {/* <Process /> */}
+        {/* <FAQAccordion /> */}
+        {/* <InTheWorks /> */}
       </main>
       <Footer />
     </>

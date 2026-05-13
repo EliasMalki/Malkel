@@ -32,14 +32,18 @@ export default function Navigation() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: isScrolled ? '16px 32px' : '20px var(--layout-padding)',
-        backgroundColor: isScrolled ? 'var(--color-overlay-10)' : 'transparent',
-        backdropFilter: isScrolled ? 'blur(40px) saturate(180%)' : 'none',
-        WebkitBackdropFilter: isScrolled ? 'blur(40px) saturate(180%)' : 'none',
-        border: isScrolled ? '1px solid var(--color-overlay-05)' : '1px solid transparent',
-        boxShadow: isScrolled ? '0 8px 32px 0 var(--color-overlay-05)' : 'none',
-        borderRadius: isScrolled ? '980px' : '0px',
+        padding: isScrolled ? '12px 24px' : '16px 32px',
+        backgroundColor: isScrolled ? 'var(--color-nav-bg)' : 'color-mix(in srgb, var(--color-nav-bg), transparent 20%)',
+        backdropFilter: 'blur(40px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+        border: '1px solid var(--color-nav-border)',
+        boxShadow: isScrolled ? '0 8px 32px 0 var(--color-overlay-05)' : 'var(--color-panel-shadow)',
+        borderRadius: '980px',
         transition: 'all 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        margin: '0 auto',
+        width: 'fit-content',
+        minWidth: 'min(90vw, 800px)',
+        gap: '40px'
       }}>
         <div style={{
           fontFamily: 'var(--font-display)',
@@ -52,20 +56,19 @@ export default function Navigation() {
         
         <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{
           display: 'flex',
-          gap: '24px',
+          gap: '32px',
           fontSize: '14px',
           fontWeight: 500,
           color: 'var(--color-text-secondary)',
           listStyle: 'none',
           margin: 0,
-          padding: 0
+          padding: 0,
+          flex: 1,
+          justifyContent: 'center'
         }}>
           <li className="nav-item" onClick={() => scrollToId('ecosystem')}>Ecosystem</li>
-          <li className="nav-item" onClick={() => scrollToId('process')}>Process</li>
-          <li className="nav-item" onClick={() => scrollToId('why-malkel')}>Why MalkEl</li>
-          <li className="nav-item" onClick={() => scrollToId('faq')}>FAQ</li>
           <li className="nav-item" onClick={() => scrollToId('deployments')}>Deployments</li>
-          <li className="nav-item" onClick={() => scrollToId('roadmap')}>Roadmap</li>
+          <li className="nav-item" onClick={() => scrollToId('why-malkel')}>Why Us</li>
         </ul>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -119,10 +122,10 @@ export default function Navigation() {
             top: calc(100% + 8px);
             left: 0;
             width: 100%;
-            background-color: var(--color-overlay-10);
+            background-color: var(--color-nav-bg);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--color-overlay-05);
+            border: 1px solid var(--color-nav-border);
             border-radius: 24px;
             flex-direction: column;
             padding: 0;

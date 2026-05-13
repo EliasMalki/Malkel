@@ -68,6 +68,7 @@
 
 :root {
   --color-bg: #000000;
+  --page-bg: #000000;
   --color-surface: #0A0A0A;
   --color-text-primary: #FFFFFF;
   --color-text-secondary: rgba(255, 255, 255, 0.6);
@@ -79,14 +80,20 @@
   --color-success-glow: rgba(16, 185, 129, 0.2);
   --color-nav-bg: rgba(0, 0, 0, 0.8);
   --color-nav-border: rgba(255, 255, 255, 0.08);
+  --color-panel-bg: rgba(255, 255, 255, 0.05);
+  --color-panel-border: rgba(255, 255, 255, 0.1);
+  --color-field-bg: rgba(255, 255, 255, 0.04);
+  --color-panel-shadow: none;
 
   --color-overlay-03: rgba(255, 255, 255, 0.03);
   --color-overlay-04: rgba(255, 255, 255, 0.04);
   --color-overlay-05: rgba(255, 255, 255, 0.05);
   --color-overlay-08: rgba(255, 255, 255, 0.08);
   --color-overlay-10: rgba(255, 255, 255, 0.1);
+  --color-overlay-15: rgba(255, 255, 255, 0.15);
   --color-overlay-20: rgba(255, 255, 255, 0.2);
   --color-overlay-22: rgba(255, 255, 255, 0.22);
+  --color-overlay-25: rgba(255, 255, 255, 0.25);
   --color-overlay-30: rgba(255, 255, 255, 0.3);
   --color-overlay-40: rgba(255, 255, 255, 0.4);
   --color-overlay-50: rgba(255, 255, 255, 0.5);
@@ -98,10 +105,15 @@
   --color-inverse-overlay-40: rgba(0, 0, 0, 0.4);
   --color-inverse-overlay-60: rgba(0, 0, 0, 0.6);
   --color-inverse-overlay-80: rgba(0, 0, 0, 0.8);
+  --select-arrow-icon: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 :root[data-theme='light'] {
   --color-bg: #F8F9FA;
+  --page-bg:
+    radial-gradient(circle at 50% 18%, rgba(212, 160, 86, 0.12), transparent 30%),
+    radial-gradient(circle at 12% 42%, rgba(0, 212, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #FBFCFD 0%, #F4F5F7 48%, #EEF0F3 100%);
   --color-surface: #FFFFFF;
   --color-text-primary: #1A1A1A;
   --color-text-secondary: rgba(0, 0, 0, 0.6);
@@ -111,16 +123,22 @@
   --color-accent: #D4A056;
   --color-success: #059669;
   --color-success-glow: rgba(16, 185, 129, 0.15);
-  --color-nav-bg: rgba(255, 255, 255, 0.8);
-  --color-nav-border: rgba(0, 0, 0, 0.08);
+  --color-nav-bg: rgba(255, 255, 255, 0.72);
+  --color-nav-border: rgba(24, 24, 27, 0.12);
+  --color-panel-bg: rgba(255, 255, 255, 0.62);
+  --color-panel-border: rgba(24, 24, 27, 0.12);
+  --color-field-bg: rgba(255, 255, 255, 0.66);
+  --color-panel-shadow: 0 18px 60px rgba(24, 24, 27, 0.08);
 
   --color-overlay-03: rgba(0, 0, 0, 0.03);
   --color-overlay-04: rgba(0, 0, 0, 0.04);
   --color-overlay-05: rgba(0, 0, 0, 0.05);
   --color-overlay-08: rgba(0, 0, 0, 0.08);
   --color-overlay-10: rgba(0, 0, 0, 0.1);
+  --color-overlay-15: rgba(0, 0, 0, 0.15);
   --color-overlay-20: rgba(0, 0, 0, 0.2);
   --color-overlay-22: rgba(0, 0, 0, 0.22);
+  --color-overlay-25: rgba(0, 0, 0, 0.25);
   --color-overlay-30: rgba(0, 0, 0, 0.3);
   --color-overlay-40: rgba(0, 0, 0, 0.4);
   --color-overlay-50: rgba(0, 0, 0, 0.5);
@@ -132,6 +150,7 @@
   --color-inverse-overlay-40: rgba(255, 255, 255, 0.7);
   --color-inverse-overlay-60: rgba(255, 255, 255, 0.8);
   --color-inverse-overlay-80: rgba(255, 255, 255, 0.9);
+  --select-arrow-icon: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 :root {
@@ -160,7 +179,9 @@
 }
 
 body {
+  background: var(--page-bg);
   background-color: var(--color-bg);
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-text);
   line-height: 1.55;
@@ -206,7 +227,7 @@ svg {
 
 /* Base Accessibility / Focus */
 :focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline: 2px solid var(--color-overlay-60);
   outline-offset: 4px;
 }
 
@@ -330,7 +351,7 @@ svg {
 .btn-ghost {
   background-color: transparent;
   color: var(--color-text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--color-overlay-22);
 }
 
 .btn-success {

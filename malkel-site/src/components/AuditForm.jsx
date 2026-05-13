@@ -37,8 +37,8 @@ export default function AuditForm() {
 
   const inputStyle = {
     width: '100%',
-    backgroundColor: 'var(--color-overlay-04)',
-    border: '1px solid var(--color-overlay-08)',
+    backgroundColor: 'var(--color-field-bg)',
+    border: '1px solid var(--color-panel-border)',
     borderRadius: '8px',
     padding: '16px 20px',
     color: 'var(--color-text-primary)',
@@ -46,6 +46,15 @@ export default function AuditForm() {
     fontFamily: 'inherit',
     transition: 'border-color 200ms ease, background-color 200ms ease',
     outline: 'none'
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    appearance: 'none',
+    backgroundImage: 'var(--select-arrow-icon)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 16px center',
+    backgroundSize: '16px'
   };
 
   const labelStyle = {
@@ -96,7 +105,7 @@ export default function AuditForm() {
               </div>
               <div style={{ flex: 1 }}>
                 <label htmlFor="volume" style={labelStyle}>Monthly Lead Volume</label>
-                <select id="volume" name="volume" required className="form-input" style={{ ...inputStyle, appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center', backgroundSize: '16px' }}>
+                <select id="volume" name="volume" required className="form-input" style={selectStyle}>
                   <option value="" disabled selected>Select volume...</option>
                   <option value="<100">&lt;100</option>
                   <option value="100-500">100–500</option>
@@ -108,7 +117,7 @@ export default function AuditForm() {
 
             <div>
               <label htmlFor="bottleneck" style={labelStyle}>Biggest Bottleneck</label>
-              <select id="bottleneck" name="bottleneck" required className="form-input" style={{ ...inputStyle, appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center', backgroundSize: '16px' }}>
+              <select id="bottleneck" name="bottleneck" required className="form-input" style={selectStyle}>
                 <option value="" disabled selected>Select bottleneck...</option>
                 <option value="Slow lead follow-up">Slow lead follow-up</option>
                 <option value="Disconnected tools">Disconnected tools</option>
@@ -121,7 +130,7 @@ export default function AuditForm() {
 
             <div>
               <label htmlFor="revenue" style={labelStyle}>Target Revenue Goal</label>
-              <select id="revenue" name="revenue" required className="form-input" style={{ ...inputStyle, appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center', backgroundSize: '16px' }}>
+              <select id="revenue" name="revenue" required className="form-input" style={selectStyle}>
                 <option value="" disabled selected>Select revenue goal...</option>
                 <option value="$500K–$1M">$500K–$1M</option>
                 <option value="$1M–$5M">$1M–$5M</option>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useId } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
@@ -10,48 +10,50 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 function GrainientBg({ color, theme }) {
   const uid = useId().replace(/:/g, '');
 
-  const base = theme === 'light' ? '#F5F5F7' : '#0a0a0a';
-  // Primary blob opacities
-  const o1 = theme === 'light' ? '55' : '40';
-  const o2 = theme === 'light' ? '30' : '28';
-  const o3 = theme === 'light' ? '20' : '18';
-  // Extra lighter shade of same hue (simulate a lighter tint by mixing with white/dark)
-  const o4 = theme === 'light' ? '18' : '14';
+  const base = theme === 'light' ? 'rgba(245, 245, 247, 0.5)' : 'rgba(10, 10, 10, 0.4)';
+  
+  // Theme-aware secondary colors to mix into the gradient
+  const themeAccent1 = theme === 'light' ? '#ffffff' : '#000000';
+  const themeAccent2 = theme === 'light' ? '#e0e7ff' : '#111827'; // Soft indigo vs Deep charcoal
+
+  // Opacities (hex)
+  const oCard = theme === 'light' ? '45' : '35'; // Card brand color
+  const oTheme = theme === 'light' ? '60' : '40'; // Theme accents
 
   return (
     <div aria-hidden="true" style={{
       position: 'absolute', inset: 0, borderRadius: 'inherit',
       overflow: 'hidden', zIndex: 0, pointerEvents: 'none'
     }}>
-      {/* Base */}
+      {/* Base layer */}
       <div style={{ position: 'absolute', inset: 0, background: base, borderRadius: 'inherit' }} />
 
-      {/* Blob 1 — top-left, primary */}
+      {/* Blob 1 — Primary Card Color */}
       <div style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit',
-        background: `radial-gradient(ellipse 80% 65% at 15% 15%, ${color}${o1}, transparent 65%)`,
-        animation: `gbBlob1-${uid} 8s ease-in-out infinite`,
+        position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+        background: `radial-gradient(circle at 30% 35%, ${color}${oCard}, transparent 50%)`,
+        animation: `gbBlob1-${uid} 14s ease-in-out infinite`,
       }} />
 
-      {/* Blob 2 — bottom-right, secondary */}
+      {/* Blob 2 — Secondary Card Color (slightly offset) */}
       <div style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit',
-        background: `radial-gradient(ellipse 70% 70% at 85% 85%, ${color}${o2}, transparent 65%)`,
-        animation: `gbBlob2-${uid} 11s ease-in-out infinite`,
+        position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+        background: `radial-gradient(circle at 70% 65%, ${color}${oCard}, transparent 50%)`,
+        animation: `gbBlob2-${uid} 18s ease-in-out infinite`,
       }} />
 
-      {/* Blob 3 — top-right, extra lighter shade */}
+      {/* Blob 3 — Theme State Color 1 (e.g. White or Pure Black) */}
       <div style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit',
-        background: `radial-gradient(ellipse 50% 55% at 80% 10%, ${color}${o3}, transparent 70%)`,
-        animation: `gbBlob3-${uid} 14s ease-in-out infinite`,
+        position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+        background: `radial-gradient(circle at 70% 30%, ${themeAccent1}${oTheme}, transparent 55%)`,
+        animation: `gbBlob3-${uid} 22s ease-in-out infinite`,
       }} />
 
-      {/* Blob 4 — centre, very faint extra shade for depth */}
+      {/* Blob 4 — Theme State Color 2 (e.g. Soft Indigo or Deep Grey) */}
       <div style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit',
-        background: `radial-gradient(ellipse 55% 45% at 50% 55%, ${color}${o4}, transparent 70%)`,
-        animation: `gbBlob4-${uid} 18s ease-in-out infinite`,
+        position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
+        background: `radial-gradient(circle at 20% 70%, ${themeAccent2}${oTheme}, transparent 55%)`,
+        animation: `gbBlob4-${uid} 26s ease-in-out infinite`,
       }} />
 
       {/* Grain overlay */}
@@ -59,32 +61,28 @@ function GrainientBg({ color, theme }) {
         position: 'absolute', inset: 0, borderRadius: 'inherit',
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
         backgroundSize: '256px 256px',
-        opacity: theme === 'light' ? 0.045 : 0.065,
+        opacity: theme === 'light' ? 0.04 : 0.06,
         mixBlendMode: 'overlay',
       }} />
 
       <style>{`
         @keyframes gbBlob1-${uid} {
-          0%   { transform: translate(0px, 0px); }
-          33%  { transform: translate(12px, -10px); }
-          66%  { transform: translate(-8px, 14px); }
-          100% { transform: translate(0px, 0px); }
+          0%, 100% { transform: translate(0, 0); }
+          33%      { transform: translate(40px, -30px); }
+          66%      { transform: translate(-25px, 40px); }
         }
         @keyframes gbBlob2-${uid} {
-          0%   { transform: translate(0px, 0px); }
-          40%  { transform: translate(-14px, 10px); }
-          75%  { transform: translate(10px, -12px); }
-          100% { transform: translate(0px, 0px); }
+          0%, 100% { transform: translate(0, 0); }
+          40%      { transform: translate(-40px, 30px); }
+          75%      { transform: translate(25px, -40px); }
         }
         @keyframes gbBlob3-${uid} {
-          0%   { transform: translate(0px, 0px); }
-          50%  { transform: translate(-10px, 12px); }
-          100% { transform: translate(0px, 0px); }
+          0%, 100% { transform: translate(0, 0); }
+          50%      { transform: translate(-30px, 35px); }
         }
         @keyframes gbBlob4-${uid} {
-          0%   { transform: translate(0px, 0px); }
-          50%  { transform: translate(8px, -6px); }
-          100% { transform: translate(0px, 0px); }
+          0%, 100% { transform: translate(0, 0); }
+          50%      { transform: translate(35px, -30px); }
         }
       `}</style>
     </div>
@@ -177,14 +175,13 @@ export default function EcosystemBento() {
   const [activeId, setActiveId] = useState(null);
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
   const [hoveredId, setHoveredId] = useState(null);
-  const [currentTheme, setCurrentTheme] = useState('dark');
+  const [currentTheme, setCurrentTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark');
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'dark');
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'dark');
     return () => observer.disconnect();
   }, []);
 
@@ -207,15 +204,15 @@ export default function EcosystemBento() {
   const modalTransition = { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] };
 
   return (
-    <section id="ecosystem" className="section container" ref={ref} style={{ position: 'relative' }}>
-      <div className={`reveal ${isIntersecting ? 'is-visible' : ''}`} style={{ marginBottom: '80px', textAlign: 'center' }}>
-        <div className="text-eyebrow" style={{ marginBottom: '18px', fontSize: '11px', letterSpacing: '0.16em' }}>
+    <section id="ecosystem" className="section container eco-section-fit" ref={ref} style={{ position: 'relative' }}>
+      <div className={`reveal ${isIntersecting ? 'is-visible' : ''}`} style={{ marginBottom: '28px', textAlign: 'center' }}>
+        <div className="text-eyebrow" style={{ marginBottom: '12px', fontSize: '11px', letterSpacing: '0.16em' }}>
           The MalkEl Ecosystem
         </div>
-        <h2 className="text-section-title" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: '18px' }}>
+        <h2 className="text-section-title" style={{ fontSize: 'clamp(34px, 4vw, 54px)', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: '12px' }}>
           One roof. Every solution.
         </h2>
-        <p style={{ fontSize: '17px', maxWidth: '560px', margin: '0 auto', lineHeight: 1.6, color: 'var(--color-text-secondary)' }}>
+        <p style={{ fontSize: '15px', maxWidth: '560px', margin: '0 auto', lineHeight: 1.45, color: 'var(--color-text-secondary)' }}>
           Strategy, software, automation, and operations — engineered as a single unified system, not a stack of vendors.
         </p>
       </div>
@@ -224,7 +221,7 @@ export default function EcosystemBento() {
         {cardsData.map((card, index) => {
           const isHovered = hoveredId === card.id;
           return (
-            <motion.div
+            <Motion.div
               key={card.id}
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
@@ -282,7 +279,7 @@ export default function EcosystemBento() {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           );
         })}
       </div>
@@ -291,7 +288,7 @@ export default function EcosystemBento() {
       <AnimatePresence>
         {activeId && activeCard && (
           <React.Fragment>
-            <motion.div
+            <Motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -301,7 +298,7 @@ export default function EcosystemBento() {
               className="eco-modal-backdrop"
             />
             <div className="eco-modal-wrapper">
-              <motion.div
+              <Motion.div
                 key={`modal-${activeCard.id}`}
                 className="eco-modal"
                 initial={{ opacity: 0, scale: 0.96, y: 16 }}
@@ -354,7 +351,7 @@ export default function EcosystemBento() {
                 </div>
 
                 {/* Body */}
-                <motion.div
+                <Motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08, duration: 0.3 }}
@@ -385,20 +382,32 @@ export default function EcosystemBento() {
                       Book a Free Infrastructure Audit
                     </button>
                   </div>
-                </motion.div>
-              </motion.div>
+                </Motion.div>
+              </Motion.div>
             </div>
           </React.Fragment>
         )}
       </AnimatePresence>
 
       <style>{`
+        .eco-section-fit {
+          min-height: 100svh;
+          padding-top: clamp(48px, 6vh, 72px) !important;
+          padding-bottom: clamp(32px, 5vh, 52px) !important;
+        }
         .eco-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-          max-width: 1120px;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 18px;
+          max-width: 1480px;
           margin: 0 auto;
+          align-items: stretch;
+        }
+        @media (max-width: 1360px) {
+          .eco-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            max-width: 1120px;
+          }
         }
         @media (max-width: 768px) {
           .eco-grid { grid-template-columns: 1fr; }
@@ -409,15 +418,18 @@ export default function EcosystemBento() {
           overflow: hidden;
           cursor: default;
           background: transparent;
-          border: 1px solid var(--color-overlay-08);
+          border: 1px solid var(--color-panel-border);
           display: flex;
           flex-direction: column;
           position: relative;
           transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+          min-width: 0;
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
         }
 
         .eco-card-img {
-          aspect-ratio: 600 / 360;
+          aspect-ratio: 4 / 3;
           width: calc(100% - 24px);
           margin: 12px 12px 0;
           border-radius: 12px;
@@ -427,20 +439,21 @@ export default function EcosystemBento() {
           justify-content: center;
           position: relative;
           z-index: 1;
-          background: var(--color-overlay-03);
+          background: var(--color-field-bg);
         }
         [data-theme="light"] .eco-card-img {
           background: rgba(255,255,255,0.5);
         }
 
         .eco-card-body {
-          padding: 24px 28px 28px;
+          padding: 18px 20px 18px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 8px;
           flex: 1;
           position: relative;
           z-index: 1;
+          min-width: 0;
         }
 
         .eco-card-overline {
@@ -455,7 +468,7 @@ export default function EcosystemBento() {
         .eco-card:hover .eco-card-overline { opacity: 1; }
 
         .eco-card-title {
-          font-size: 24px;
+          font-size: 20px;
           font-weight: 600;
           letter-spacing: -0.02em;
           line-height: 1.15;
@@ -463,8 +476,8 @@ export default function EcosystemBento() {
         }
 
         .eco-card-desc {
-          font-size: 14px;
-          line-height: 1.6;
+          font-size: 12.5px;
+          line-height: 1.42;
           font-weight: 400;
           letter-spacing: -0.005em;
           color: var(--color-text-secondary);
@@ -473,7 +486,7 @@ export default function EcosystemBento() {
         }
 
         .eco-card-tag {
-          font-size: 13px;
+          font-size: 12.5px;
           font-weight: 500;
           letter-spacing: -0.005em;
           color: var(--color-text-primary);
@@ -483,13 +496,16 @@ export default function EcosystemBento() {
 
         .eco-card-actions {
           display: flex;
-          gap: 10px;
-          margin-top: 16px;
+          gap: 8px;
+          margin-top: auto;
+          padding-top: 12px;
+          flex-wrap: wrap;
         }
 
         .eco-btn-learn {
-          flex: 1;
-          padding: 11px 0;
+          flex: 1 1 0;
+          min-width: 0;
+          padding: 10px 8px;
           border: none;
           border-radius: 10px;
           font-size: 13px;
@@ -503,14 +519,15 @@ export default function EcosystemBento() {
         .eco-btn-learn:active { transform: translateY(0); opacity: 1; }
 
         .eco-btn-audit {
-          flex: 1;
-          padding: 11px 0;
+          flex: 1 1 0;
+          min-width: 0;
+          padding: 10px 8px;
           border: 1px solid var(--color-overlay-15);
           border-radius: 10px;
           font-size: 13px;
           font-weight: 600;
           color: var(--color-text-primary);
-          background: var(--color-overlay-05);
+          background: var(--color-field-bg);
           cursor: pointer;
           letter-spacing: 0.01em;
           transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
@@ -521,6 +538,57 @@ export default function EcosystemBento() {
           transform: translateY(-1px);
         }
         .eco-btn-audit:active { transform: translateY(0); }
+        @media (max-height: 780px) and (min-width: 900px) {
+          .eco-section-fit {
+            padding-top: 38px !important;
+            padding-bottom: 32px !important;
+          }
+          .eco-grid {
+            gap: 14px;
+          }
+          .eco-card-img {
+            aspect-ratio: 4 / 2.8;
+          }
+          .eco-card-body {
+            padding: 14px 16px 14px;
+          }
+          .eco-card-desc {
+            font-size: 12px;
+            line-height: 1.35;
+          }
+        }
+        @media (max-width: 640px) {
+          .eco-section-fit {
+            min-height: auto;
+            padding-top: 120px !important;
+            padding-bottom: 120px !important;
+          }
+          .eco-card-body {
+            padding: 22px 22px 24px;
+          }
+          .eco-card-img {
+            aspect-ratio: 600 / 360;
+          }
+          .eco-card-actions {
+            flex-direction: row;
+            padding-top: 10px;
+          }
+          .eco-btn-learn,
+          .eco-btn-audit {
+            flex: 1 1 0;
+            width: auto;
+            font-size: 12px;
+            padding: 10px 8px;
+          }
+          .eco-modal {
+            padding: 28px 20px;
+            border-radius: 18px;
+          }
+          .eco-modal-img {
+            height: 220px;
+            margin-bottom: 24px;
+          }
+        }
 
         /* Modal */
         .eco-modal-backdrop {
@@ -543,7 +611,7 @@ export default function EcosystemBento() {
         }
         .eco-modal {
           background: var(--color-surface, #0A0A0A);
-          border: 1px solid var(--color-overlay-20);
+          border: 1px solid var(--color-panel-border);
           border-radius: 24px;
           padding: 48px;
           width: 100%;
@@ -556,7 +624,7 @@ export default function EcosystemBento() {
           display: flex;
           flex-direction: column;
           gap: 32px;
-          box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+          box-shadow: 0 24px 48px rgba(0,0,0,0.24), var(--color-panel-shadow);
         }
         .eco-modal-close {
           position: absolute;
@@ -584,7 +652,7 @@ export default function EcosystemBento() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--color-overlay-05);
+          background: var(--color-field-bg);
         }
         .eco-modal-heading {
           font-size: 18px;
@@ -598,6 +666,12 @@ export default function EcosystemBento() {
         .eco-modal::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 8px; }
         .eco-modal::-webkit-scrollbar-thumb { background: var(--color-overlay-20); border-radius: 8px; }
         .eco-modal::-webkit-scrollbar-thumb:hover { background: var(--color-overlay-30); }
+
+        /* Internal SVG Background Transparency */
+        .eco-card-img svg .bg-card,
+        .eco-modal-img svg .bg-card {
+          fill: none !important;
+        }
       `}</style>
     </section>
   );
