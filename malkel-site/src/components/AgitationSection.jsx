@@ -244,12 +244,14 @@ export default function AgitationSection() {
             min-height: 100svh;
             padding-top: clamp(56px, 6vh, 76px) !important;
             padding-bottom: clamp(36px, 5vh, 56px) !important;
+            max-width: 1800px !important;
           }
           .agitation-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
             grid-template-rows: repeat(2, minmax(260px, 1fr));
             gap: 16px !important;
             min-height: min(660px, calc(100svh - 160px));
+            max-width: 100%;
           }
           .agitation-card .text-body {
             font-size: 14px;
@@ -257,6 +259,22 @@ export default function AgitationSection() {
           }
           .agitation-mini-chart {
             height: clamp(130px, 18vh, 170px) !important;
+          }
+          @media (min-width: 1500px) {
+            .agitation-grid {
+              gap: 24px !important;
+              grid-template-rows: repeat(2, minmax(340px, 1fr));
+            }
+            .agitation-mini-chart {
+              height: clamp(180px, 22vh, 240px) !important;
+            }
+            .operational-tax-card .agitation-mini-chart {
+              height: clamp(160px, 20vh, 200px) !important;
+            }
+            .agitation-card .text-body {
+              font-size: 16px;
+              max-width: 500px !important;
+            }
           }
           @media (min-width: 1024px) {
             .agitation-grid {
@@ -467,20 +485,20 @@ export default function AgitationSection() {
                       const timeStr = tool.cost > 50 ? `${randomMins[idx % randomMins.length]} mins ago` : `${randomHours[idx % randomHours.length]} hour${randomHours[idx % randomHours.length] > 1 ? 's' : ''} ago`;
                       
                       return (
-                      <div key={idx} style={{ padding: '10px 16px', background: 'var(--color-field-bg)', borderRadius: '10px', border: '1px solid var(--color-panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', width: '100%', maxWidth: '380px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: '14px' }}>
+                      <div key={idx} style={{ padding: '8px 12px', background: 'var(--color-field-bg)', borderRadius: '8px', border: '1px solid var(--color-panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', width: '100%', maxWidth: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: '12px' }}>
                             {tool.name.charAt(0)}
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ color: 'var(--color-text-primary)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>INVOICE</span>
+                              <span style={{ color: 'var(--color-text-primary)', fontSize: '13px', fontWeight: 600 }}>{tool.name}</span>
                               <span style={{ color: 'var(--color-text-secondary)', fontSize: '10px' }}>{timeStr}</span>
                             </div>
-                            <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500, fontSize: '13px' }}>{tool.name}</span>
+                            <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>INVOICE</span>
                           </div>
                         </div>
-                        <span style={{ color: '#ef4444', fontWeight: 600, fontSize: '14px' }}>-${tool.cost}</span>
+                        <span style={{ color: '#ef4444', fontWeight: 600, fontSize: '13px' }}>-${tool.cost}</span>
                       </div>
                     )})}
                   </AnimatedList>
@@ -501,19 +519,19 @@ export default function AgitationSection() {
 
                  <div className="agitation-mini-chart" style={{ height: '170px', width: '100%', position: 'relative' }}>
                    {/* Central Labels */}
-                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 2 }}>
-                     <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-secondary)', opacity: 0.6, letterSpacing: '0.1em' }}>AVG. WEEK</div>
-                     <div style={{ fontSize: '32px', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1 }}>40 HRS</div>
+                   <div style={{ position: 'absolute', top: '80%', left: '50%', transform: 'translate(-50%, -100%)', textAlign: 'center', zIndex: 2 }}>
+                     <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-secondary)', opacity: 0.6, letterSpacing: '0.1em' }}>AVG. WEEK</div>
+                     <div style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1 }}>40 HRS</div>
                    </div>
 
                    <ResponsiveContainer width="100%" height="100%">
                      <RadialBarChart 
-                       innerRadius="65%" 
+                       innerRadius="75%" 
                        outerRadius="100%" 
                        data={adminData} 
                        startAngle={180} 
                        endAngle={0}
-                       cy="70%"
+                       cy="80%"
                      >
                        <PolarAngleAxis type="number" domain={[0, 40]} angleAxisId={0} tick={false} />
                        <RadialBar dataKey="core" stackId="a" fill="var(--color-overlay-20)" cornerRadius={6} />
@@ -522,9 +540,9 @@ export default function AgitationSection() {
                    </ResponsiveContainer>
 
                    {/* Sub-chart Label */}
-                   <div style={{ position: 'absolute', top: '75%', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', width: '100%' }}>
-                     <div style={{ color: '#ef4444', fontWeight: 700, fontSize: '15px' }}>16 HOURS LOST TO ADMIN</div>
-                     <div style={{ color: 'var(--color-text-secondary)', fontSize: '12px', fontWeight: 500 }}>Only 24 hrs spent on core work</div>
+                   <div style={{ position: 'absolute', top: '80%', left: '50%', transform: 'translate(-50%, 8px)', textAlign: 'center', width: '100%', zIndex: 2 }}>
+                     <div style={{ color: '#ef4444', fontWeight: 700, fontSize: '13px' }}>16 HOURS LOST TO ADMIN</div>
+                     <div style={{ color: 'var(--color-text-secondary)', fontSize: '11px', fontWeight: 500 }}>Only 24 hrs spent on core work</div>
                    </div>
                  </div>
               </div>

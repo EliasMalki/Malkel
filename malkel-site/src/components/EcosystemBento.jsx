@@ -10,15 +10,15 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 function GrainientBg({ color, theme }) {
   const uid = useId().replace(/:/g, '');
 
-  const base = theme === 'light' ? 'rgba(245, 245, 247, 0.5)' : 'rgba(10, 10, 10, 0.4)';
+  const base = theme === 'light' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(10, 10, 10, 0.2)';
   
   // Theme-aware secondary colors to mix into the gradient
   const themeAccent1 = theme === 'light' ? '#ffffff' : '#000000';
   const themeAccent2 = theme === 'light' ? '#e0e7ff' : '#111827'; // Soft indigo vs Deep charcoal
 
   // Opacities (hex)
-  const oCard = theme === 'light' ? '45' : '35'; // Card brand color
-  const oTheme = theme === 'light' ? '60' : '40'; // Theme accents
+  const oCard = theme === 'light' ? '18' : '14'; // Balanced brand color
+  const oTheme = theme === 'light' ? '22' : '10'; // Balanced theme accents
 
   return (
     <div aria-hidden="true" style={{
@@ -252,6 +252,27 @@ export default function EcosystemBento() {
                 </div>
                 <h3 className="eco-card-title">{card.title}</h3>
                 <p className="eco-card-desc">{card.description}</p>
+                
+                {/* Full Objective for wide screens */}
+                <div className="eco-card-objective-wide">
+                  <div className="eco-card-objective-heading" style={{ color: card.color }}>The Objective</div>
+                  <p className="eco-card-objective-text">{card.expandedObjective}</p>
+                </div>
+
+                {/* Full Examples for wide screens */}
+                <div className="eco-card-examples-wide">
+                  <div className="eco-card-objective-heading" style={{ color: card.color, marginTop: '8px' }}>Deployment Examples</div>
+                  <ul className="eco-card-examples-list">
+                    {card.expandedExamples.map((example, i) => (
+                      <li key={i}>
+                        <span style={{ color: card.color }}>→</span>
+                        <span style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}> {example.split(':')[0]}:</span>
+                        {example.split(':').slice(1).join(':')}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
                 <div className="eco-card-tag" style={{
                   color: isHovered ? `color-mix(in srgb, var(--color-text-primary), ${card.color} 30%)` : undefined,
                   transition: 'color 300ms ease'
@@ -394,12 +415,13 @@ export default function EcosystemBento() {
           min-height: 100svh;
           padding-top: clamp(48px, 6vh, 72px) !important;
           padding-bottom: clamp(32px, 5vh, 52px) !important;
+          max-width: 1800px !important; /* Allow section to span much wider on large monitors */
         }
         .eco-grid {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 18px;
-          max-width: 1480px;
+          max-width: 100%; /* Take up the full allowed width of the expanded section */
           margin: 0 auto;
           align-items: stretch;
         }
@@ -485,6 +507,11 @@ export default function EcosystemBento() {
           margin-top: 2px;
         }
 
+        .eco-card-objective-wide,
+        .eco-card-examples-wide {
+          display: none;
+        }
+
         .eco-card-tag {
           font-size: 12.5px;
           font-weight: 500;
@@ -555,6 +582,59 @@ export default function EcosystemBento() {
           .eco-card-desc {
             font-size: 12px;
             line-height: 1.35;
+          }
+        }
+        @media (min-width: 1500px) {
+          .eco-card-desc {
+            display: none; /* Hide the short description on wide screens */
+          }
+          .eco-card-objective-wide {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 4px;
+            margin-bottom: 6px;
+          }
+          .eco-card-objective-heading {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.9;
+          }
+          .eco-card-objective-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--color-text-secondary);
+            opacity: 0.85;
+          }
+          .eco-card-examples-wide {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+          }
+          .eco-card-examples-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: var(--color-text-secondary);
+            opacity: 0.85;
+          }
+          .eco-card-examples-list li {
+            padding-left: 14px;
+            position: relative;
+          }
+          .eco-card-examples-list li > span:first-child {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 600;
           }
         }
         @media (max-width: 640px) {

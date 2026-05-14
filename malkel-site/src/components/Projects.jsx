@@ -1,9 +1,20 @@
+import { useState, useEffect } from 'react';
 import { ArrowUpRight, Building2, Layers3, Package } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { useCenterHover } from '../hooks/useCenterHover';
+import { FlickeringGrid } from './ui/FlickeringGrid';
 
 export default function Projects() {
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark');
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
 
   const customerDeployments = [
     {
@@ -41,21 +52,24 @@ export default function Projects() {
       focus: 'Lead response and qualification',
       does: 'Engages inbound prospects, qualifies fit, routes the lead, and triggers the next sales action before the team opens a dashboard.',
       built: 'Designed the conversation flow, scoring logic, routing layer, and multi-channel follow-up engine.',
-      technologies: ['LLMs', 'Twilio', 'Workflow engine', 'CRM sync']
+      technologies: ['LLMs', 'Twilio', 'Workflow engine', 'CRM sync'],
+      color: '#2C9F94'
     },
     {
       product: 'Cobalt',
       focus: 'Workforce clock-in and geofencing',
       does: 'Tracks employee clock-ins, clock-outs, job-site presence, and shift compliance with geofencing rules built into the workflow.',
       built: 'Built the mobile workforce flow, location rule system, attendance records, manager review states, and operational reporting layer.',
-      technologies: ['React', 'Geofencing', 'Supabase', 'Role access']
+      technologies: ['React', 'Geofencing', 'Supabase', 'Role access'],
+      color: '#3b82f6'
     },
     {
       product: 'Audit Engine',
       focus: 'Infrastructure opportunity mapping',
       does: 'Turns a business intake into a scored map of revenue leaks, automation opportunities, system gaps, and priority fixes.',
       built: 'Built the audit logic, scoring framework, report outputs, and recommendation model.',
-      technologies: ['Data scoring', 'Reports', 'Automation maps', 'Rules engine']
+      technologies: ['Data scoring', 'Reports', 'Automation maps', 'Rules engine'],
+      color: '#D4A056'
     }
   ];
 
@@ -99,12 +113,22 @@ export default function Projects() {
 
     return (
       <article ref={cardRef} className={`deployment-card product-card ${isHovered ? 'mobile-active' : ''}`}>
+        <div className="product-card-bg">
+          <FlickeringGrid 
+            squareSize={3}
+            gridGap={5}
+            flickerChance={0.05}
+            color={product.color}
+            maxOpacity={theme === 'dark' ? 0.45 : 0.55}
+          />
+        </div>
+
         <div className="card-topline">
           <div className="identity-mark">
             <Package size={16} />
           </div>
           <div>
-            <div className="deployment-name">{product.product}</div>
+            <div className="deployment-name" style={{ color: product.color }}>{product.product}</div>
             <div className="deployment-meta">{product.focus}</div>
           </div>
         </div>
@@ -377,6 +401,17 @@ export default function Projects() {
           gap: 18px;
           position: relative;
           z-index: 1;
+        }
+        .product-card-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          opacity: 1;
+          mask-image: radial-gradient(circle at center, black, transparent 80%);
+          -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+        [data-theme="light"] .product-card-bg {
+          opacity: 0.7;
         }
         @media (max-width: 1080px) {
           .deployment-grid {
