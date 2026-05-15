@@ -69,6 +69,7 @@ export default function Navigation() {
           <li className="nav-item" onClick={() => scrollToId('ecosystem')}>Ecosystem</li>
           <li className="nav-item" onClick={() => scrollToId('deployments')}>Deployments</li>
           <li className="nav-item" onClick={() => scrollToId('why-malkel')}>Why Us</li>
+          <li className="nav-item mobile-audit-nav" onClick={() => scrollToId('audit')} style={{ color: '#10B981', fontWeight: 600 }}>Book a Free Audit</li>
         </ul>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -109,7 +110,14 @@ export default function Navigation() {
           color: var(--color-text-primary);
         }
         
+        .mobile-audit-nav {
+          display: none !important;
+        }
+        
         @media (max-width: 900px) {
+          .mobile-audit-nav {
+            display: block !important;
+          }
           .mobile-menu-btn {
             display: block !important;
           }

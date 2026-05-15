@@ -8,15 +8,14 @@ export default function Hero() {
 
   return (
     <section style={{
-      minHeight: '100vh',
+      minHeight: '100dvh',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       position: 'relative',
       paddingTop: '80px', // offset for nav
-      overflow: 'hidden',
-      scrollSnapAlign: 'start'
+      overflow: 'hidden'
     }}>
       <div className="container" style={{
         display: 'flex',
@@ -51,10 +50,10 @@ export default function Hero() {
         </p>
 
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={() => document.getElementById('ecosystem')?.scrollIntoView({ behavior: 'smooth' })}>
             Explore the Ecosystem
           </button>
-          <button className="btn btn-success">
+          <button className="btn btn-success" onClick={() => document.getElementById('audit')?.scrollIntoView({ behavior: 'smooth' })}>
             Book a Free Audit
           </button>
         </div>

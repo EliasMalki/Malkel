@@ -69,11 +69,22 @@ export const FlickeringGrid = ({
       }
     });
 
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
+      intersectionObserver.observe(containerRef.current);
     }
 
-    return () => resizeObserver.disconnect();
+    return () => {
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -90,7 +101,22 @@ export const FlickeringGrid = ({
 
     let animationFrameId;
 
-    const draw = () => {
+    let lastDrawTime = 0;
+    const targetFPS = 30; // Limit FPS to save battery/reduce lag
+    const frameInterval = 1000 / targetFPS;
+
+    const draw = (time) => {
+      if (!isInView) {
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+
+      if (time - lastDrawTime < frameInterval) {
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+      lastDrawTime = time;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.scale(dpr, dpr);
 
@@ -115,7 +141,7 @@ export const FlickeringGrid = ({
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    draw();
+    animationFrameId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -128,6 +154,7 @@ export const FlickeringGrid = ({
     gridGap,
     maxOpacity,
     canvasSize,
+    isInView,
   ]);
 
   return (

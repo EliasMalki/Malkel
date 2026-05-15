@@ -386,6 +386,19 @@ export default function AgitationSection() {
               flex-direction: column !important;
               gap: 32px !important;
             }
+            .operational-tax-content {
+              flex-direction: column !important;
+              gap: 40px !important;
+              align-items: center !important;
+            }
+            .human-capital-col {
+              align-items: center !important;
+              text-align: center !important;
+              gap: 12px !important;
+            }
+            .human-capital-chart-wrap {
+              height: 200px !important;
+            }
           }
         `}</style>
 
@@ -548,7 +561,7 @@ export default function AgitationSection() {
               </div>
 
               {/* Right Side: Human Capital Drain */}
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+              <div className="human-capital-col" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <span className="text-eyebrow" style={{ color: 'var(--color-text-primary)' }}>HUMAN CAPITAL DRAIN</span>
                   <div style={heroStyle}>
@@ -558,14 +571,14 @@ export default function AgitationSection() {
                     Of your team's week lost to admin a system should handle.
                   </p>
                 </div>
-
-                 <div className="agitation-mini-chart" style={{ height: '170px', width: '100%', position: 'relative' }}>
-                   {/* Central Labels */}
-                   <div style={{ position: 'absolute', top: '80%', left: '50%', transform: 'translate(-50%, -100%)', textAlign: 'center', zIndex: 2 }}>
-                     <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-text-secondary)', opacity: 0.6, letterSpacing: '0.1em' }}>AVG. WEEK</div>
-                     <div style={{ fontSize: '28px', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1 }}>40 HRS</div>
+ 
+                 <div className="agitation-mini-chart human-capital-chart-wrap" style={{ height: '170px', width: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   {/* Central Labels - Inside the Arc */}
+                   <div style={{ position: 'absolute', top: '75%', left: '50%', transform: 'translate(-50%, -100%)', textAlign: 'center', zIndex: 2 }}>
+                     <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--color-text-secondary)', opacity: 0.6, letterSpacing: '0.1em', marginBottom: '2px' }}>AVG. WEEK</div>
+                     <div style={{ fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 700, color: 'var(--color-text-primary)', lineHeight: 1 }}>40 HRS</div>
                    </div>
-
+ 
                    <ResponsiveContainer width="100%" height="100%">
                      <RadialBarChart 
                        innerRadius="75%" 
@@ -573,17 +586,18 @@ export default function AgitationSection() {
                        data={adminData} 
                        startAngle={180} 
                        endAngle={0}
-                       cy="80%"
+                       cx="50%"
+                       cy="75%"
                      >
                        <PolarAngleAxis type="number" domain={[0, 40]} angleAxisId={0} tick={false} />
                        <RadialBar dataKey="core" stackId="a" fill="var(--color-overlay-20)" cornerRadius={6} />
                        <RadialBar dataKey="admin" stackId="a" fill="#ef4444" cornerRadius={6} />
                      </RadialBarChart>
                    </ResponsiveContainer>
-
-                   {/* Sub-chart Label */}
-                   <div style={{ position: 'absolute', top: '80%', left: '50%', transform: 'translate(-50%, 8px)', textAlign: 'center', width: '100%', zIndex: 2 }}>
-                     <div style={{ color: '#ef4444', fontWeight: 700, fontSize: '13px' }}>16 HOURS LOST TO ADMIN</div>
+ 
+                   {/* Sub-chart Label - Below the Arc */}
+                   <div style={{ position: 'absolute', top: '75%', left: '50%', transform: 'translate(-50%, 15px)', textAlign: 'center', width: '100%', zIndex: 2 }}>
+                     <div style={{ color: '#ef4444', fontWeight: 700, fontSize: '13px', whiteSpace: 'nowrap' }}>16 HOURS LOST TO ADMIN</div>
                      <div style={{ color: 'var(--color-text-secondary)', fontSize: '11px', fontWeight: 500 }}>Only 24 hrs spent on core work</div>
                    </div>
                  </div>
