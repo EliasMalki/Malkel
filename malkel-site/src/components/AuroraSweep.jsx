@@ -75,7 +75,7 @@ export default function AuroraSweep() {
         }
       }
       lastRenderTime = t;
-      time += 0.004;
+      time += 0.0032;
 
       // Clear canvas cleanly
       ctx.globalCompositeOperation = 'source-over';
