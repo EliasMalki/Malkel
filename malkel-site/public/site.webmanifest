@@ -1,0 +1,20 @@
+{
+  "name": "MalkEl Solutions",
+  "short_name": "MalkEl",
+  "description": "Full-service software & business agency. Websites, apps, CRMs, and AI automation under one roof.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
