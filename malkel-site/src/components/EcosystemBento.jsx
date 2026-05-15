@@ -185,11 +185,6 @@ export default function EcosystemBento() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = activeId ? 'hidden' : 'auto';
-    return () => { document.body.style.overflow = 'auto'; };
-  }, [activeId]);
-
   const scrollToAudit = () => {
     setActiveId(null);
     setTimeout(() => {

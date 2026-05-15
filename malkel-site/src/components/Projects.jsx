@@ -12,11 +12,6 @@ export default function Projects() {
   const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
-    document.body.style.overflow = activeId ? 'hidden' : 'auto';
-    return () => { document.body.style.overflow = 'auto'; };
-  }, [activeId]);
-
-  useEffect(() => {
     const observer = new MutationObserver(() => {
       setTheme(document.documentElement.getAttribute('data-theme') || 'dark');
     });
