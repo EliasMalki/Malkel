@@ -39,7 +39,7 @@ function AccordionItem({ item, isOpen, onClick }) {
         style={{
           width: '100%',
           textAlign: 'left',
-          padding: '32px 0',
+          padding: 'clamp(16px, 3vh, 32px) 0',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -83,7 +83,7 @@ export default function FAQAccordion() {
 
   return (
     <section id="faq" className="section container" ref={ref} style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div className={`reveal ${isIntersecting ? 'is-visible' : ''}`} style={{ marginBottom: '64px' }}>
+      <div className={`reveal ${isIntersecting ? 'is-visible' : ''}`} style={{ marginBottom: 'clamp(32px, 5vh, 64px)' }}>
         <div className="text-eyebrow" style={{ marginBottom: '24px' }}>
           Questions
         </div>

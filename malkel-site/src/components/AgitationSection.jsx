@@ -219,6 +219,7 @@ export default function AgitationSection() {
   return (
     <section id="agitation" className="section container compact-section" style={{ position: 'relative' }}>
       <div className={`reveal ${isInView ? 'is-visible' : ''}`} style={{ marginBottom: '24px', textAlign: 'center' }}>
+        <div className="text-eyebrow" style={{ color: 'var(--color-overlay-60)', marginBottom: '12px' }}>The Reality Check</div>
         <h2 className="text-section-title" style={{ color: 'var(--color-text-primary)', fontSize: 'clamp(32px, 5vw, 48px)', margin: '0 auto' }}>
           Friction is stealing your revenue.
         </h2>
@@ -241,16 +242,18 @@ export default function AgitationSection() {
             100% { background-position: 0% 50%; }
           }
           .compact-section {
-            min-height: 100svh;
-            padding-top: clamp(56px, 6vh, 76px) !important;
-            padding-bottom: clamp(36px, 5vh, 56px) !important;
-            max-width: 1800px !important;
-          }
+          min-height: 100svh;
+          padding-top: clamp(120px, 15vh, 180px) !important;
+          padding-bottom: clamp(40px, 6vh, 80px) !important;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          max-width: 1536px !important;
+        }
           .agitation-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            grid-template-rows: repeat(2, minmax(260px, 1fr));
-            gap: 16px !important;
-            min-height: min(660px, calc(100svh - 160px));
+            grid-template-rows: repeat(2, minmax(200px, 1fr));
+            gap: 12px !important;
             max-width: 100%;
           }
           .agitation-card .text-body {
@@ -259,6 +262,42 @@ export default function AgitationSection() {
           }
           .agitation-mini-chart {
             height: clamp(130px, 18vh, 170px) !important;
+          }
+          @media (max-height: 1000px) {
+            .compact-section {
+              padding-top: 24px !important;
+              padding-bottom: 20px !important;
+            }
+            .agitation-grid {
+              grid-template-rows: repeat(2, minmax(160px, 1fr));
+              gap: 10px !important;
+            }
+            .agitation-card {
+              padding: 12px 14px !important;
+            }
+            .agitation-card h3 {
+              font-size: 14px !important;
+              margin-bottom: 4px !important;
+            }
+            .agitation-card .text-body {
+              font-size: 11px !important;
+              line-height: 1.2 !important;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+            .agitation-mini-chart {
+              height: 110px !important;
+            }
+            .text-section-title {
+              font-size: 28px !important;
+              margin-bottom: 8px !important;
+            }
+            .text-eyebrow {
+              margin-bottom: 4px !important;
+              font-size: 10px !important;
+            }
           }
           @media (min-width: 1500px) {
             .agitation-grid {
@@ -339,6 +378,9 @@ export default function AgitationSection() {
               height: auto !important;
               min-height: 0 !important;
               padding: 24px !important;
+            }
+            .globe-card {
+              min-height: 380px !important;
             }
             .agitation-card-full {
               flex-direction: column !important;
@@ -600,7 +642,7 @@ export default function AgitationSection() {
           </div>
 
           {/* Card 5: Competing locally */}
-          <div className="agitation-card" style={cardStyle}>
+          <div className="agitation-card globe-card" style={cardStyle}>
             <div style={topHalf}>
               <h3 style={headlineStyle}>You are competing locally, not globally</h3>
               <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '400px', fontSize: '13px' }}>

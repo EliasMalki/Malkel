@@ -413,6 +413,9 @@ export default function EcosystemBento() {
       <style>{`
         .eco-section-fit {
           min-height: 100svh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
           padding-top: clamp(48px, 6vh, 72px) !important;
           padding-bottom: clamp(32px, 5vh, 52px) !important;
           max-width: 1800px !important; /* Allow section to span much wider on large monitors */
@@ -446,6 +449,7 @@ export default function EcosystemBento() {
           position: relative;
           transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
           min-width: 0;
+          min-height: clamp(280px, 35vh, 420px);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
         }
@@ -584,7 +588,7 @@ export default function EcosystemBento() {
             line-height: 1.35;
           }
         }
-        @media (min-width: 1500px) {
+        @media (min-width: 1500px) and (min-height: 1000px) {
           .eco-card-desc {
             display: none; /* Hide the short description on wide screens */
           }
@@ -751,6 +755,71 @@ export default function EcosystemBento() {
         .eco-card-img svg .bg-card,
         .eco-modal-img svg .bg-card {
           fill: none !important;
+        }
+
+        @media (max-height: 1000px) {
+          .eco-section-fit {
+            justify-content: flex-start !important;
+            padding-top: 24px !important;
+            padding-bottom: 24px !important;
+          }
+          .eco-card {
+            min-height: auto !important;
+            max-height: 55vh !important;
+          }
+          .eco-card-img {
+            aspect-ratio: 14 / 9 !important;
+            margin: 8px 8px 0 !important;
+            width: calc(100% - 16px) !important;
+          }
+          .eco-card-body {
+            padding: 14px 16px 14px !important;
+            gap: 6px !important;
+          }
+          .eco-card-title {
+            font-size: 16px !important;
+          }
+          .eco-card-desc {
+            display: none !important;
+          }
+          .eco-card-objective-wide {
+            display: flex !important;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 2px;
+          }
+          .eco-card-objective-heading {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.1em !important;
+          }
+          .eco-card-objective-text {
+            font-size: 12.5px !important;
+            line-height: 1.35 !important;
+            color: var(--color-text-secondary) !important;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin: 0 !important;
+          }
+          .eco-card-overline {
+            font-size: 10px !important;
+            margin-bottom: 4px !important;
+          }
+          .eco-btn-learn, .eco-btn-audit {
+            padding: 8px 6px !important;
+            font-size: 12px !important;
+            margin-top: 4px !important;
+          }
+          .text-section-title {
+            font-size: clamp(26px, 3.5vw, 40px) !important;
+            margin-bottom: 8px !important;
+          }
+          .text-eyebrow {
+             margin-bottom: 6px !important;
+          }
         }
       `}</style>
     </section>

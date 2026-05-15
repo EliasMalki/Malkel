@@ -17,28 +17,33 @@ export function ShineBorder({
 }) {
   return (
     <div
-      style={
-        {
-          "--border-width": `${borderWidth}px`,
-          "--duration": `${duration}s`,
-
-          backgroundImage: `radial-gradient(transparent,transparent, ${
-            Array.isArray(shineColor) ? shineColor.join(",") : shineColor
-          },transparent,transparent)`,
-
-          backgroundSize: "300% 300%",
-          mask: `linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)`,
-          WebkitMask: `linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)`,
-          WebkitMaskComposite: "xor",
-          maskComposite: "exclude",
-          padding: "var(--border-width)",
-          ...style
-        }
-      }
       className={cn(
-        "motion-safe:animate-shine pointer-events-none absolute inset-0 size-full rounded-[inherit] will-change-[background-position]",
+        "pointer-events-none absolute inset-0 size-full rounded-[inherit] overflow-hidden",
         className
       )}
-      {...props} />
+      style={{
+        mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+        WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+        WebkitMaskComposite: "xor",
+        maskComposite: "exclude",
+        padding: `${borderWidth}px`,
+        ...style
+      }}
+      {...props}
+    >
+      <div 
+        className="animate-spin"
+        style={{
+          position: 'absolute',
+          top: '-100%',
+          left: '-100%',
+          right: '-100%',
+          bottom: '-100%',
+          background: `conic-gradient(from 0deg, transparent 0%, transparent 20%, ${Array.isArray(shineColor) ? shineColor.join(",") : shineColor} 50%, transparent 80%, transparent 100%)`,
+          animationDuration: `${duration}s`,
+          animationDelay: style?.animationDelay,
+        }}
+      />
+    </div>
   );
 }

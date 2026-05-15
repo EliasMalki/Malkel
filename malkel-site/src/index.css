@@ -159,14 +159,14 @@
 
   --layout-max-width: 1120px;
   --layout-padding: 48px;
-  --section-padding-y: 200px;
+  --section-padding-y: clamp(80px, 12vh, 180px);
   --grid-gap: 24px;
 }
 
 @media (max-width: 768px) {
   :root {
     --layout-padding: 24px;
-    --section-padding-y: 160px;
+    --section-padding-y: clamp(60px, 10vh, 120px);
   }
 }
 
@@ -176,6 +176,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -269,6 +275,13 @@ svg {
   padding-top: var(--section-padding-y);
   padding-bottom: var(--section-padding-y);
   position: relative;
+  scroll-snap-align: start;
+}
+
+@media (max-height: 1000px) {
+  :root {
+    --section-padding-y: clamp(40px, 8vh, 80px);
+  }
 }
 
 /* Typography Classes */

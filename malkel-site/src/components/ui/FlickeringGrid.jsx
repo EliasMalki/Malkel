@@ -23,7 +23,7 @@ export const FlickeringGrid = ({
   const memoizedColor = useMemo(() => {
     // If it's already an RGB-like string of digits
     if (color.startsWith('rgb')) {
-      const rgb = color.match(/\d+/g);
+    const rgb = color.match(/\d+/g);
       return rgb ? `${rgb[0]}, ${rgb[1]}, ${rgb[2]}` : "125, 125, 125";
     }
     

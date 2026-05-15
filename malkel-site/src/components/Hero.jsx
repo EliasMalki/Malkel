@@ -15,7 +15,8 @@ export default function Hero() {
       alignItems: 'center',
       position: 'relative',
       paddingTop: '80px', // offset for nav
-      overflow: 'hidden'
+      overflow: 'hidden',
+      scrollSnapAlign: 'start'
     }}>
       <div className="container" style={{
         display: 'flex',
