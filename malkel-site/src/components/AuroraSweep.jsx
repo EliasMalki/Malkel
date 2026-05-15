@@ -3,6 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 export default function AuroraSweep() {
   const canvasRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  // iOS Safari kills tabs that exceed ~250MB of GPU memory. Detect mobile/tablet
+  // class devices and render a lighter version that's visually indistinguishable.
+  const [isMobile] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,10 +22,10 @@ export default function AuroraSweep() {
     let animationFrameId;
     let time = 0;
 
-    // Performance: Render at 30% resolution. 
+    // Performance: Render at low resolution.
     // Because we heavily blur the output anyway, rendering fewer pixels reduces GPU load by roughly 90%
-    // and stops the initial page load from freezing.
-    const dpr = 0.3;
+    // and stops the initial page load from freezing. Mobile gets an even smaller buffer.
+    const dpr = isMobile ? 0.2 : 0.3;
 
     const resize = () => {
       canvas.width = window.innerWidth * dpr;
@@ -91,10 +96,13 @@ export default function AuroraSweep() {
       drawAbstractSweep(140, 90, height * 0.25, 0.0018, 1.4, height * 0.1, 0.18, 1.0);
       drawAbstractSweep(170, 200, height * 0.38, 0.0022, 1.6, height * 0.0, 0.20, 0.7);
 
-      // New vibrant sweeps
-      drawAbstractSweep(240, 270, height * 0.32, 0.0012, 1.3, height * 0.15, 0.24, 0.9);
-      drawAbstractSweep(340, 310, height * 0.36, 0.0019, 1.7, height * -0.05, 0.25, 1.1);
-      drawAbstractSweep(290, 230, height * 0.42, 0.0014, 1.1, height * 0.1, 0.22, 1.3);
+      // New vibrant sweeps — desktop only. On mobile the 5 sweeps above already
+      // saturate the gradients post-blur; adding 3 more is invisible but doubles fill cost.
+      if (!isMobile) {
+        drawAbstractSweep(240, 270, height * 0.32, 0.0012, 1.3, height * 0.15, 0.24, 0.9);
+        drawAbstractSweep(340, 310, height * 0.36, 0.0019, 1.7, height * -0.05, 0.25, 1.1);
+        drawAbstractSweep(290, 230, height * 0.42, 0.0014, 1.1, height * 0.1, 0.22, 1.3);
+      }
 
       if (!isLightMode) {
         // Hole Punch Mask
@@ -119,7 +127,7 @@ export default function AuroraSweep() {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <canvas
@@ -143,7 +151,10 @@ export default function AuroraSweep() {
         opacity: isLoaded ? 1 : 0,
         transition: 'opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1)',
 
-        filter: 'blur(56px) saturate(1.08)'
+        // Mobile uses a smaller blur radius — iOS Safari allocates a GPU layer
+        // proportional to blur size, and 56px on a full-viewport fixed element is the
+        // single biggest VRAM cost on the page. 28px reads identically once composited.
+        filter: isMobile ? 'blur(28px) saturate(1.08)' : 'blur(56px) saturate(1.08)'
       }}
     />
   );

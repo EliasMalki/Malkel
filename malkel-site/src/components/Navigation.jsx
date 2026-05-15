@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useScroll } from '../hooks/useScroll';
 import ThemeToggle from './ThemeToggle';
 
@@ -6,6 +6,19 @@ export default function Navigation() {
   const scrollY = useScroll();
   const isScrolled = scrollY > 50;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // backdrop-filter is the most expensive operation on iOS Safari — it samples
+  // every layer behind the element. Detect touch-class devices and use a smaller
+  // blur radius (still looks frosted, costs a fraction of the VRAM).
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1024px)');
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  const navBackdrop = isMobile ? 'blur(20px) saturate(160%)' : 'blur(40px) saturate(180%)';
 
   const scrollToId = (id) => {
     const el = document.getElementById(id);
@@ -34,8 +47,8 @@ export default function Navigation() {
         alignItems: 'center',
         padding: isScrolled ? '12px 24px' : '16px 32px',
         backgroundColor: isScrolled ? 'var(--color-nav-bg)' : 'color-mix(in srgb, var(--color-nav-bg), transparent 20%)',
-        backdropFilter: 'blur(40px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+        backdropFilter: navBackdrop,
+        WebkitBackdropFilter: navBackdrop,
         border: '1px solid var(--color-nav-border)',
         boxShadow: isScrolled ? '0 8px 32px 0 var(--color-overlay-05)' : 'var(--color-panel-shadow)',
         borderRadius: '980px',
@@ -131,8 +144,8 @@ export default function Navigation() {
             left: 0;
             width: 100%;
             background-color: var(--color-nav-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
             border: 1px solid var(--color-nav-border);
             border-radius: 24px;
             flex-direction: column;
