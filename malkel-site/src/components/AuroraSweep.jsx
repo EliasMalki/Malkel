@@ -20,7 +20,11 @@ export default function AuroraSweep() {
     if (prefersReducedMotion) return;
 
     let animationFrameId;
-    let time = 0;
+    // Seed time to a developed phase so the very first painted frame already shows
+    // the aurora's curves in interesting positions instead of the flat sin(0) baseline.
+    // Especially important on mobile where the user often starts scrolling immediately
+    // and the throttle kicks in before the animation has time to "develop" naturally.
+    let time = 50;
 
     // Performance: Render at low resolution.
     // Because we heavily blur the output anyway, rendering fewer pixels reduces GPU load by roughly 90%
@@ -43,16 +47,13 @@ export default function AuroraSweep() {
     // scroll event; adding a 60fps canvas redraw on top pushes VRAM allocation past
     // the jetsam threshold and the tab is killed. We can't fully *pause* drawing —
     // iOS evicts canvas layers that stop receiving draws, which is what caused the
-    // sweep to vanish during scroll. Throttling to ~15fps keeps the layer live and
-    // motion fluid while cutting allocation churn ~4x. Time advances against real
-    // elapsed time (not per-frame), so the aurora's animation looks correct even
-    // when frames are skipped — fixes the "aurora barely there for 30s on load"
-    // bug caused by iOS Safari's address-bar collapse firing constant scroll events.
+    // sweep to vanish during scroll. 30fps during scroll halves the allocation rate
+    // vs 60fps but motion stays visually smooth. Time advances per-frame (not
+    // real-time) so frame-to-frame motion is always tiny and smooth — never jumpy.
     let isScrolling = false;
     let scrollTimeout;
     let lastRenderTime = 0;
-    let lastTickTime = performance.now();
-    const SCROLL_FRAME_INTERVAL = 1000 / 15; // 15fps during scroll
+    const SCROLL_FRAME_INTERVAL = 1000 / 30; // 30fps during scroll
     const onScroll = () => {
       isScrolling = true;
       clearTimeout(scrollTimeout);
@@ -64,11 +65,6 @@ export default function AuroraSweep() {
 
     const render = (now) => {
       const t = now || performance.now();
-      // Real-time time progression — 0.004 per frame at 60fps = 0.24 units/sec
-      const deltaSec = Math.min((t - lastTickTime) / 1000, 0.1); // clamp big gaps
-      lastTickTime = t;
-      time += deltaSec * 0.24;
-
       if (isMobile && isScrolling) {
         if (t - lastRenderTime < SCROLL_FRAME_INTERVAL) {
           animationFrameId = requestAnimationFrame(render);
@@ -76,6 +72,7 @@ export default function AuroraSweep() {
         }
       }
       lastRenderTime = t;
+      time += 0.004;
 
       // Clear canvas cleanly
       ctx.globalCompositeOperation = 'source-over';
@@ -185,9 +182,10 @@ export default function AuroraSweep() {
         transform: 'translateZ(0)',
 
         // Aesthetic Fixes:
-        // Gracefully fades in over 1.5 seconds instead of jarring the screen on mount
+        // Quick fade-in so the aurora is fully visible before the user starts scrolling
+        // (which on mobile would otherwise throttle the canvas before it finishes appearing).
         opacity: isLoaded ? 1 : 0,
-        transition: 'opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
 
         // Mobile uses a smaller blur radius — iOS Safari allocates a GPU layer
         // proportional to blur size, and 56px on a full-viewport fixed element is the
