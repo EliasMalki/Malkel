@@ -58,12 +58,16 @@ export default function Navigation() {
         minWidth: 'min(90vw, 800px)',
         gap: '40px'
       }}>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '17px',
-          fontWeight: 600,
-          letterSpacing: '0.08em'
-        }}>
+        <div 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '17px',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            cursor: 'pointer'
+          }}
+        >
           MALKEL
         </div>
         
