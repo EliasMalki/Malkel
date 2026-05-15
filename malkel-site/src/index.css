@@ -78,7 +78,7 @@
   --color-accent: #D4A056;
   --color-success: #10B981;
   --color-success-glow: rgba(16, 185, 129, 0.2);
-  --color-nav-bg: rgba(0, 0, 0, 0.8);
+  --color-nav-bg: rgba(0, 0, 0, 0.45);
   --color-nav-border: rgba(255, 255, 255, 0.08);
   --color-panel-bg: rgba(255, 255, 255, 0.05);
   --color-panel-border: rgba(255, 255, 255, 0.1);
@@ -123,7 +123,7 @@
   --color-accent: #D4A056;
   --color-success: #059669;
   --color-success-glow: rgba(16, 185, 129, 0.15);
-  --color-nav-bg: rgba(255, 255, 255, 0.72);
+  --color-nav-bg: rgba(255, 255, 255, 0.45);
   --color-nav-border: rgba(24, 24, 27, 0.12);
   --color-panel-bg: rgba(255, 255, 255, 0.62);
   --color-panel-border: rgba(24, 24, 27, 0.12);

@@ -18,7 +18,7 @@ export default function Navigation() {
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
-  const navBackdrop = isMobile ? 'blur(20px) saturate(160%)' : 'blur(40px) saturate(180%)';
+  const navBackdrop = isMobile ? 'blur(20px) saturate(160%)' : 'blur(56px) saturate(190%)';
 
   const scrollToId = (id) => {
     const el = document.getElementById(id);
@@ -157,10 +157,14 @@ export default function Navigation() {
             gap: 0 !important;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 300ms ease, padding 300ms ease;
+            opacity: 0;
+            pointer-events: none;
+            transition: max-height 300ms ease, padding 300ms ease, opacity 200ms ease;
           }
-          
+
           .nav-links.mobile-open {
+            opacity: 1;
+            pointer-events: auto;
             max-height: 400px;
             padding: 16px 0 !important;
           }
