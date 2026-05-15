@@ -43,13 +43,16 @@ export default function AuroraSweep() {
     // scroll event; adding a 60fps canvas redraw on top pushes VRAM allocation past
     // the jetsam threshold and the tab is killed. We can't fully *pause* drawing —
     // iOS evicts canvas layers that stop receiving draws, which is what caused the
-    // sweep to vanish during scroll. Throttling to ~5fps keeps the layer live while
-    // cutting allocation churn ~12x, and the slower animation is invisible because
-    // the user's eye is on the moving content during scroll.
+    // sweep to vanish during scroll. Throttling to ~15fps keeps the layer live and
+    // motion fluid while cutting allocation churn ~4x. Time advances against real
+    // elapsed time (not per-frame), so the aurora's animation looks correct even
+    // when frames are skipped — fixes the "aurora barely there for 30s on load"
+    // bug caused by iOS Safari's address-bar collapse firing constant scroll events.
     let isScrolling = false;
     let scrollTimeout;
     let lastRenderTime = 0;
-    const SCROLL_FRAME_INTERVAL = 200; // 5fps during scroll
+    let lastTickTime = performance.now();
+    const SCROLL_FRAME_INTERVAL = 1000 / 15; // 15fps during scroll
     const onScroll = () => {
       isScrolling = true;
       clearTimeout(scrollTimeout);
@@ -60,17 +63,19 @@ export default function AuroraSweep() {
     }
 
     const render = (now) => {
+      const t = now || performance.now();
+      // Real-time time progression — 0.004 per frame at 60fps = 0.24 units/sec
+      const deltaSec = Math.min((t - lastTickTime) / 1000, 0.1); // clamp big gaps
+      lastTickTime = t;
+      time += deltaSec * 0.24;
+
       if (isMobile && isScrolling) {
-        const t = now || performance.now();
         if (t - lastRenderTime < SCROLL_FRAME_INTERVAL) {
           animationFrameId = requestAnimationFrame(render);
           return;
         }
-        lastRenderTime = t;
-      } else if (now) {
-        lastRenderTime = now;
       }
-      time += 0.004;
+      lastRenderTime = t;
 
       // Clear canvas cleanly
       ctx.globalCompositeOperation = 'source-over';
