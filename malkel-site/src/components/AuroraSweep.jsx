@@ -38,7 +38,27 @@ export default function AuroraSweep() {
     // Trigger smooth fade-in after mounting
     requestAnimationFrame(() => setIsLoaded(true));
 
+    // On mobile, pause canvas redraws while the user is actively scrolling.
+    // iOS Safari is already recompositing the blurred layer + nav backdrop on every
+    // scroll event; adding a 60fps canvas redraw on top pushes VRAM allocation past
+    // the jetsam threshold and the tab is killed. Freezing the background during
+    // scroll is invisible to the user (their eye is on the moving content).
+    let isScrolling = false;
+    let scrollTimeout;
+    const onScroll = () => {
+      isScrolling = true;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => { isScrolling = false; }, 150);
+    };
+    if (isMobile) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
     const render = () => {
+      if (isMobile && isScrolling) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
       time += 0.004;
 
       // Clear canvas cleanly
@@ -125,6 +145,8 @@ export default function AuroraSweep() {
 
     return () => {
       window.removeEventListener('resize', resize);
+      if (isMobile) window.removeEventListener('scroll', onScroll);
+      clearTimeout(scrollTimeout);
       cancelAnimationFrame(animationFrameId);
     };
   }, [isMobile]);

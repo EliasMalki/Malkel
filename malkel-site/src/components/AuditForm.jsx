@@ -34,24 +34,34 @@ export default function AuditForm() {
     }
 
     try {
-      // We route the request asynchronously to an email-sending API
+      // Use FormData which is often more reliable for CORS than JSON
+      const formData = new FormData();
+      Object.keys(formDataState).forEach(key => {
+        formData.append(key, formDataState[key]);
+      });
+      
+      // Add meta fields
+      formData.append("_subject", `New Audit Request from ${formDataState.name}`);
+      formData.append("_template", "table");
+      formData.append("_captcha", "false");
+
       const response = await fetch("https://formsubmit.co/ajax/info@malkel.com", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: JSON.stringify(formDataState)
+        body: formData,
+        // Remove manual headers to let the browser set the correct multipart boundaries
+        mode: 'cors',
+        cache: 'no-cache'
       });
       
       if (response.ok) {
         setSubmitted(true);
       } else {
-        alert("Failed to send request. Please try again.");
+        const errorText = await response.text();
+        throw new Error(errorText || "Server error");
       }
     } catch (error) {
-      console.error(error);
-      alert("Network error. Please try again.");
+      console.error("Form Submission Error:", error);
+      alert("Still encountering a network block. This is likely a firewall or security setting on your current network. If you are on a VPN or corporate WiFi, please try a different connection.");
     }
   };
 

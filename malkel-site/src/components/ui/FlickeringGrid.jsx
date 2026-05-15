@@ -41,7 +41,9 @@ export const FlickeringGrid = ({
 
   const setupCanvas = useCallback(
     (canvas, width, height) => {
-      const dpr = window.devicePixelRatio || 1;
+      // Cap DPR at 1.5 — iPhone is 3x natively, which allocates a ~15MB buffer for a
+      // fullscreen grid. The grid is tiny squares, so the visual quality is preserved.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
