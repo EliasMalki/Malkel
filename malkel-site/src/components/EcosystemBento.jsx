@@ -29,35 +29,35 @@ function GrainientBg({ color, theme }) {
       <div style={{ position: 'absolute', inset: 0, background: base, borderRadius: 'inherit' }} />
 
       {/* Blob 1 — Primary Card Color */}
-      <div style={{
+      <div className="gb-blob gb-blob-primary" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: `radial-gradient(circle at 30% 35%, ${color}${oCard}, transparent 50%)`,
         animation: `gbBlob1-${uid} 14s ease-in-out infinite`,
       }} />
 
       {/* Blob 2 — Secondary Card Color (slightly offset) */}
-      <div style={{
+      <div className="gb-blob gb-blob-primary" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: `radial-gradient(circle at 70% 65%, ${color}${oCard}, transparent 50%)`,
         animation: `gbBlob2-${uid} 18s ease-in-out infinite`,
       }} />
 
       {/* Blob 3 — Theme State Color 1 (e.g. White or Pure Black) */}
-      <div style={{
+      <div className="gb-blob gb-blob-accent" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: `radial-gradient(circle at 70% 30%, ${themeAccent1}${oTheme}, transparent 55%)`,
         animation: `gbBlob3-${uid} 22s ease-in-out infinite`,
       }} />
 
       {/* Blob 4 — Theme State Color 2 (e.g. Soft Indigo or Deep Grey) */}
-      <div style={{
+      <div className="gb-blob gb-blob-accent" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: `radial-gradient(circle at 20% 70%, ${themeAccent2}${oTheme}, transparent 55%)`,
         animation: `gbBlob4-${uid} 26s ease-in-out infinite`,
       }} />
 
       {/* Grain overlay */}
-      <div style={{
+      <div className="gb-grain" style={{
         position: 'absolute', inset: 0, borderRadius: 'inherit',
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
         backgroundSize: '256px 256px',
@@ -431,6 +431,31 @@ export default function EcosystemBento() {
         }
         @media (max-width: 768px) {
           .eco-grid { grid-template-columns: 1fr; }
+        }
+
+        /* iOS Safari kills tabs when too many GPU compositor layers stack.
+           Each card was contributing: 4 animated blob layers (200% × 200%),
+           a mixBlendMode grain overlay, AND a backdrop-filter sampling the
+           already-blurred AuroraSweep canvas behind it. Four cards = the
+           crash. On mobile/tablet we strip the heaviest layers but keep the
+           colored-card aesthetic via the two primary brand-colored blobs. */
+        @media (max-width: 1024px) {
+          .eco-card {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            background: var(--color-panel-bg, rgba(255,255,255,0.04));
+          }
+          .gb-blob-accent { display: none; }
+          .gb-blob-primary {
+            width: 130% !important;
+            height: 130% !important;
+            top: -15% !important;
+            left: -15% !important;
+          }
+          .gb-grain {
+            mix-blend-mode: normal !important;
+            opacity: 0.03 !important;
+          }
         }
 
         .eco-card {
