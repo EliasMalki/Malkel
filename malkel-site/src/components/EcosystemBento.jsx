@@ -17,8 +17,7 @@ function GrainientBg({ color }) {
       <div style={{ 
         position: 'absolute', inset: 0, 
         background: 'var(--gb-base)', 
-        borderRadius: 'inherit',
-        transition: 'background 300ms ease'
+        borderRadius: 'inherit'
       }} />
 
       {/* Blob 1 — Primary Card Color */}
@@ -40,7 +39,6 @@ function GrainientBg({ color }) {
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: 'radial-gradient(circle at 70% 30%, var(--gb-accent-1), transparent 55%)',
         animation: 'gbBlob3 22s ease-in-out infinite',
-        transition: 'background 300ms ease'
       }} />
 
       {/* Blob 4 — Theme State Color 2 (e.g. Soft Indigo or Deep Grey) */}
@@ -48,7 +46,6 @@ function GrainientBg({ color }) {
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
         background: 'radial-gradient(circle at 20% 70%, var(--gb-accent-2), transparent 55%)',
         animation: 'gbBlob4 26s ease-in-out infinite',
-        transition: 'background 300ms ease'
       }} />
 
       {/* Grain overlay */}
