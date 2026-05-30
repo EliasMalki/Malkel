@@ -160,9 +160,7 @@ export default function AgitationSection() {
     height: '100%',
     position: 'relative',
     overflow: 'hidden',
-    boxShadow: 'var(--color-panel-shadow)',
-    backdropFilter: 'blur(22px) saturate(130%)',
-    WebkitBackdropFilter: 'blur(22px) saturate(130%)'
+    boxShadow: 'var(--color-panel-shadow)'
   };
 
   const topHalf = {
@@ -256,6 +254,10 @@ export default function AgitationSection() {
             gap: 12px !important;
             max-width: 100%;
           }
+          .agitation-card {
+            backdrop-filter: blur(22px) saturate(130%);
+            -webkit-backdrop-filter: blur(22px) saturate(130%);
+          }
           .agitation-card .text-body {
             font-size: 14px;
             line-height: 1.35;
@@ -331,6 +333,12 @@ export default function AgitationSection() {
             }
             .operational-tax-card .agitation-mini-chart {
               height: clamp(124px, 16vh, 150px) !important;
+            }
+          }
+          @media (max-width: 1024px) {
+            .agitation-card {
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
             }
           }
           @media (max-width: 1180px) {
