@@ -618,6 +618,6 @@ svg {
 }
 
 /* Smooth global transition for theme-aware properties */
-body, header, footer, section, .eco-card, .eco-card-img, .form-input, .btn, nav {
-  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease, backdrop-filter 300ms ease;
+.eco-card, .eco-card-img, .form-input, .btn, nav {
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
 }
