@@ -614,7 +614,7 @@ svg {
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Smooth global transition for theme-aware properties */
