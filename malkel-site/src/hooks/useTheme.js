@@ -14,16 +14,19 @@ export function useTheme() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
 
-    // WebKit/Safari Repaint invalidation fix:
-    // Forces WebKit to instantly discard stale GPU layers and repaint layout
-    const body = document.body;
-    if (body) {
-      body.classList.add('theme-changing');
-      const _ = body.offsetHeight; // Forces synchronous layout recalculation
-      requestAnimationFrame(() => {
-        body.classList.remove('theme-changing');
-      });
-    }
+    // iOS Safari composite invalidation: layout flush alone leaves cached GPU
+    // tiles intact, so composited descendants (backdrop-filter, mix-blend-mode,
+    // will-change, translateZ) keep showing the previous theme until they
+    // scroll off-screen. Applying a non-identity filter to <html> forces the
+    // compositor to evict descendant tiles; removing it next frame restores
+    // normal rendering against the new variable values. <html> is chosen
+    // (not body) so position: fixed descendants stay anchored to the viewport.
+    const root = document.documentElement;
+    root.style.filter = 'contrast(1.0001)';
+    void root.offsetHeight;
+    requestAnimationFrame(() => {
+      root.style.filter = '';
+    });
   }, [theme]);
 
   const toggleTheme = () => {
