@@ -48,20 +48,26 @@ export default function AuditForm() {
       const response = await fetch("https://formsubmit.co/ajax/info@malkel.com", {
         method: "POST",
         body: formData,
-        // Remove manual headers to let the browser set the correct multipart boundaries
         mode: 'cors',
         cache: 'no-cache'
       });
       
-      if (response.ok) {
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (jsonErr) {
+        const text = await response.text();
+        throw new Error(text || `HTTP error! Status: ${response.status}`);
+      }
+
+      if (response.ok && (responseData.success === true || responseData.success === "true")) {
         setSubmitted(true);
       } else {
-        const errorText = await response.text();
-        throw new Error(errorText || "Server error");
+        throw new Error(responseData.message || "Form submission failed.");
       }
     } catch (error) {
       console.error("Form Submission Error:", error);
-      alert("Still encountering a network block. This is likely a firewall or security setting on your current network. If you are on a VPN or corporate WiFi, please try a different connection.");
+      alert(error.message || "An unexpected error occurred. Please try again later.");
     }
   };
 

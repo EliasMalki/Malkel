@@ -85,6 +85,12 @@
   --color-field-bg: rgba(255, 255, 255, 0.04);
   --color-panel-shadow: none;
 
+  --gb-base: rgba(10, 10, 10, 0.2);
+  --gb-accent-1: rgba(0, 0, 0, 0.1);
+  --gb-accent-2: rgba(17, 24, 39, 0.1);
+  --gb-card-opacity: 0.08;
+  --gb-grain-opacity: 0.06;
+
   --color-overlay-03: rgba(255, 255, 255, 0.03);
   --color-overlay-04: rgba(255, 255, 255, 0.04);
   --color-overlay-05: rgba(255, 255, 255, 0.05);
@@ -129,6 +135,12 @@
   --color-panel-border: rgba(24, 24, 27, 0.12);
   --color-field-bg: rgba(255, 255, 255, 0.66);
   --color-panel-shadow: 0 18px 60px rgba(24, 24, 27, 0.08);
+
+  --gb-base: rgba(255, 255, 255, 0.25);
+  --gb-accent-1: rgba(255, 255, 255, 0.22);
+  --gb-accent-2: rgba(224, 231, 255, 0.22);
+  --gb-card-opacity: 0.09;
+  --gb-grain-opacity: 0.04;
 
   --color-overlay-03: rgba(0, 0, 0, 0.03);
   --color-overlay-04: rgba(0, 0, 0, 0.04);
@@ -604,4 +616,9 @@ svg {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Smooth global transition for theme-aware properties */
+body, header, footer, section, .eco-card, .eco-card-img, .form-input, .btn, nav {
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease, backdrop-filter 300ms ease;
 }

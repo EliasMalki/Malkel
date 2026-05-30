@@ -7,53 +7,48 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
  * GrainientBg — animated grainy gradient background.
  * First-iteration keyframes (translate only). 3 blobs + extra lighter shade.
  */
-function GrainientBg({ color, theme }) {
-  const uid = useId().replace(/:/g, '');
-
-  const base = theme === 'light' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(10, 10, 10, 0.2)';
-  
-  // Theme-aware secondary colors to mix into the gradient
-  const themeAccent1 = theme === 'light' ? '#ffffff' : '#000000';
-  const themeAccent2 = theme === 'light' ? '#e0e7ff' : '#111827'; // Soft indigo vs Deep charcoal
-
-  // Opacities (hex)
-  const oCard = theme === 'light' ? '18' : '14'; // Balanced brand color
-  const oTheme = theme === 'light' ? '22' : '10'; // Balanced theme accents
-
+function GrainientBg({ color }) {
   return (
     <div aria-hidden="true" style={{
       position: 'absolute', inset: 0, borderRadius: 'inherit',
       overflow: 'hidden', zIndex: 0, pointerEvents: 'none'
     }}>
       {/* Base layer */}
-      <div style={{ position: 'absolute', inset: 0, background: base, borderRadius: 'inherit' }} />
+      <div style={{ 
+        position: 'absolute', inset: 0, 
+        background: 'var(--gb-base)', 
+        borderRadius: 'inherit',
+        transition: 'background 300ms ease'
+      }} />
 
       {/* Blob 1 — Primary Card Color */}
       <div className="gb-blob gb-blob-primary" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-        background: `radial-gradient(circle at 30% 35%, ${color}${oCard}, transparent 50%)`,
-        animation: `gbBlob1-${uid} 14s ease-in-out infinite`,
+        background: `radial-gradient(circle at 30% 35%, color-mix(in srgb, ${color} calc(var(--gb-card-opacity) * 100%), transparent), transparent 50%)`,
+        animation: 'gbBlob1 14s ease-in-out infinite',
       }} />
 
       {/* Blob 2 — Secondary Card Color (slightly offset) */}
       <div className="gb-blob gb-blob-primary" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-        background: `radial-gradient(circle at 70% 65%, ${color}${oCard}, transparent 50%)`,
-        animation: `gbBlob2-${uid} 18s ease-in-out infinite`,
+        background: `radial-gradient(circle at 70% 65%, color-mix(in srgb, ${color} calc(var(--gb-card-opacity) * 100%), transparent), transparent 50%)`,
+        animation: 'gbBlob2 18s ease-in-out infinite',
       }} />
 
       {/* Blob 3 — Theme State Color 1 (e.g. White or Pure Black) */}
       <div className="gb-blob gb-blob-accent" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-        background: `radial-gradient(circle at 70% 30%, ${themeAccent1}${oTheme}, transparent 55%)`,
-        animation: `gbBlob3-${uid} 22s ease-in-out infinite`,
+        background: 'radial-gradient(circle at 70% 30%, var(--gb-accent-1), transparent 55%)',
+        animation: 'gbBlob3 22s ease-in-out infinite',
+        transition: 'background 300ms ease'
       }} />
 
       {/* Blob 4 — Theme State Color 2 (e.g. Soft Indigo or Deep Grey) */}
       <div className="gb-blob gb-blob-accent" style={{
         position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%',
-        background: `radial-gradient(circle at 20% 70%, ${themeAccent2}${oTheme}, transparent 55%)`,
-        animation: `gbBlob4-${uid} 26s ease-in-out infinite`,
+        background: 'radial-gradient(circle at 20% 70%, var(--gb-accent-2), transparent 55%)',
+        animation: 'gbBlob4 26s ease-in-out infinite',
+        transition: 'background 300ms ease'
       }} />
 
       {/* Grain overlay */}
@@ -61,30 +56,10 @@ function GrainientBg({ color, theme }) {
         position: 'absolute', inset: 0, borderRadius: 'inherit',
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
         backgroundSize: '256px 256px',
-        opacity: theme === 'light' ? 0.04 : 0.06,
         mixBlendMode: 'overlay',
+        opacity: 'var(--gb-grain-opacity)',
+        transition: 'opacity 300ms ease'
       }} />
-
-      <style>{`
-        @keyframes gbBlob1-${uid} {
-          0%, 100% { transform: translate(0, 0); }
-          33%      { transform: translate(40px, -30px); }
-          66%      { transform: translate(-25px, 40px); }
-        }
-        @keyframes gbBlob2-${uid} {
-          0%, 100% { transform: translate(0, 0); }
-          40%      { transform: translate(-40px, 30px); }
-          75%      { transform: translate(25px, -40px); }
-        }
-        @keyframes gbBlob3-${uid} {
-          0%, 100% { transform: translate(0, 0); }
-          50%      { transform: translate(-30px, 35px); }
-        }
-        @keyframes gbBlob4-${uid} {
-          0%, 100% { transform: translate(0, 0); }
-          50%      { transform: translate(35px, -30px); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -156,14 +131,13 @@ const cardsData = [
   }
 ];
 
-function ThemedSvg({ src, alt, theme }) {
+function ThemedSvg({ src, alt }) {
   const [svgContent, setSvgContent] = useState('');
   useEffect(() => {
     fetch(src).then(res => res.text()).then(text => setSvgContent(text)).catch(() => {});
   }, [src]);
   return (
     <div
-      className={theme === 'light' ? 'light' : ''}
       aria-label={alt}
       style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       dangerouslySetInnerHTML={{ __html: svgContent }}
@@ -175,15 +149,6 @@ export default function EcosystemBento() {
   const [activeId, setActiveId] = useState(null);
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
   const [hoveredId, setHoveredId] = useState(null);
-  const [currentTheme, setCurrentTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark');
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => observer.disconnect();
-  }, []);
 
   const scrollToAudit = () => {
     setActiveId(null);
@@ -230,11 +195,11 @@ export default function EcosystemBento() {
                 boxShadow: isHovered ? `0 20px 48px ${card.color}20` : 'none',
               }}
             >
-              <GrainientBg color={card.color} theme={currentTheme} />
+              <GrainientBg color={card.color} />
 
               {/* SVG image — rounded directly, no inner wrapper */}
               <div className="eco-card-img">
-                <ThemedSvg src={card.image} alt={card.title} theme={currentTheme} />
+                <ThemedSvg src={card.image} alt={card.title} />
               </div>
 
               {/* Card body */}
@@ -343,7 +308,7 @@ export default function EcosystemBento() {
                 {/* Header */}
                 <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
                   <div className="eco-modal-img">
-                    <ThemedSvg src={activeCard.image} alt={activeCard.title} theme={currentTheme} />
+                    <ThemedSvg src={activeCard.image} alt={activeCard.title} />
                   </div>
 
                   <div className="eco-card-overline" style={{ color: activeCard.color, marginBottom: '12px' }}>
@@ -406,6 +371,26 @@ export default function EcosystemBento() {
       </AnimatePresence>
 
       <style>{`
+        /* Blob animations */
+        @keyframes gbBlob1 {
+          0%, 100% { transform: translate(0, 0); }
+          33%      { transform: translate(40px, -30px); }
+          66%      { transform: translate(-25px, 40px); }
+        }
+        @keyframes gbBlob2 {
+          0%, 100% { transform: translate(0, 0); }
+          40%      { transform: translate(-40px, 30px); }
+          75%      { transform: translate(25px, -40px); }
+        }
+        @keyframes gbBlob3 {
+          0%, 100% { transform: translate(0, 0); }
+          50%      { transform: translate(-30px, 35px); }
+        }
+        @keyframes gbBlob4 {
+          0%, 100% { transform: translate(0, 0); }
+          50%      { transform: translate(35px, -30px); }
+        }
+
         .eco-section-fit {
           min-height: 100svh;
           display: flex;
